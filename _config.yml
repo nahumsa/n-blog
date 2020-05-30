@@ -15,6 +15,19 @@ baseurl: "/n-blog" # the subpath of your site, e.g. /blog
 url: "http://nahumsa.github.io" # the base hostname & protocol for your site
 twitter_username: sa_nahum
 github_username:  nahumsa
-
+use_math: true
 # Build settings
 markdown: kramdown
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-gist  
+  - jekyll-github-metadata
+
+kramdown:
+  auto_ids: true
+  input: GFM
+  math_engine: katex  
+  hard_wrap: false
+  syntax_highlighter: rouge
