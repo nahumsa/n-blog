@@ -11,7 +11,3 @@ Let's try some equations:
 $$
 D_{KL}(p \| q) = \int_x p(x) \log \frac{p(x)}{q(x)} dx
 $$
-
-Add figures:
-
-![test](/assets/images/profile.jpeg)

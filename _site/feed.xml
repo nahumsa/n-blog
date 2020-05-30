@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 30 May 2020 16:53:08 -0300</pubDate>
-    <lastBuildDate>Sat, 30 May 2020 16:53:08 -0300</lastBuildDate>
+    <pubDate>Sat, 30 May 2020 17:12:02 -0300</pubDate>
+    <lastBuildDate>Sat, 30 May 2020 17:12:02 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
     
       <item>
@@ -19,10 +19,6 @@
 &lt;div class=&quot;kdmath&quot;&gt;$$
 D_{KL}(p \| q) = \int_x p(x) \log \frac{p(x)}{q(x)} dx
 $$&lt;/div&gt;
-
-&lt;p&gt;Add figures:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/profile.jpeg&quot; alt=&quot;test&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Sat, 30 May 2020 16:41:00 -0300</pubDate>
         <link>http://localhost:4000/n-blog/2020/05/30/First-post.html</link>
