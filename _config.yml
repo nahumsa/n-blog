@@ -20,6 +20,11 @@ use_math: true
 markdown: kramdown
 theme: minima
 
+collections:
+  tags:
+    output: true
+    permalink: tags/:path/
+
 plugins:
   - jekyll-feed
   - jekyll-gist  
@@ -28,6 +33,5 @@ plugins:
 kramdown:
   auto_ids: true
   input: GFM
-  math_engine: katex  
   hard_wrap: false
   syntax_highlighter: rouge
