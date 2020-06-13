@@ -17,7 +17,9 @@ import matplotlib.pyplot as plt
 
 # 1) Introduction
 
-In this notebook I will introduce some important functions to use IBM qiskit, this will be done by an example of constructing an entangled state. 
+[Qiskit](https://qiskit.org/) is an open-source library for quantum computing developed by IBM, you can register for free on <a href="https://quantum-computing.ibm.com/" target="_blank">IBMQ</a> and get access to real quantum computers.
+
+In this post I will introduce some important functions to use IBM qiskit, this will be done by an example of constructing an entangled state, which is a important state in quantum mechanics. 
 
 # 2) Building a entangled stated from scratch
 
