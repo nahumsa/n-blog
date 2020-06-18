@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+  <!-- Mathjax Support -->
+<!-- <script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script> -->
+
+<!-- For Latex -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/images/favicon.ico" type="image/png" />
+  <title>Deutsch Algorithm</title>
+  <meta name="description" content="1) Introduction">
+  <link rel="stylesheet" href="/n-blog/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/n-blog/2020/06/18/Deutsch.html">
+  <link rel="alternate" type="application/rss+xml" title="N-Blog" href="http://localhost:4000/n-blog/feed.xml">
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/n-blog/">N-Blog</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/n-blog/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Deutsch Algorithm</h1>
+    <p class="post-meta"><time datetime="2020-06-18T10:00:00-03:00" itemprop="datePublished">Jun 18, 2020</time></p>
+    
+    <span>
+      
+        
+        <a class="post-tag" href="/n-blog/tag/Quantum-Computing"><nobr>Quantum-Computing</nobr>&nbsp;</a>
+      
+        
+        <a class="post-tag" href="/n-blog/tag/Qiskit"><nobr>Qiskit</nobr>&nbsp;</a>
+      
+        
+        <a class="post-tag" href="/n-blog/tag/Tutorial"><nobr>Tutorial</nobr>&nbsp;</a>
+      
+        
+        <a class="post-tag" href="/n-blog/tag/Quantum-Algorithm"><nobr>Quantum-Algorithm</nobr>&nbsp;</a>
+      
+    </span>
+  </header>
+  
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="1-introduction">1) Introduction</h1>
+
+<p>The Deutsch algorithm is idealized to be easy for a quantum computer with a oracle and hard for a classical deterministic computer. Therefore, it is not directly applicable to a defined problem and works more like a proof that Quantum Computers could be faster than a Classical Computer.</p>
+
+<p>This algorithm is later generalized for a function with more inputs, which is called the Deutsch-Josza Algorithm, which proves an exponential speedup relative to a classical deterministic computer, it is important to note that this doesn’t prove an exponential speedup comparing to a Probabilistic Classical Computer.</p>
+
+<h1 id="2-stating-the-problem">2) Stating the problem</h1>
+
+<p>Consider an oracle evaluating a 1 bit boolean function <script type="math/tex">f: \{ 0,1\} \rightarrow \{ 0,1\}</script> we want to know if the function is constant ( <script type="math/tex">f(0) = 0</script> and <script type="math/tex">f(1) = 1</script>) or balanced ( <script type="math/tex">f(0) = 1</script> and <script type="math/tex">f(1) = 0</script>).</p>
+
+<p>For a classical deterministic computer it is needed two queries, therefore you need to test 2 diferent bits and see the outputs, for instance if $f(0) = 0$ and $f(1) = 1$ you know that the function is constant.</p>
+
+<p>For a quantum computer this can be done with only one query. This is done with the Deutsch algorithm, the idea is to check if it is balanced, if it is not balanced it is constant.</p>
+
+<h1 id="3-algorithm">3) Algorithm</h1>
+<p>The Deutsch’s Algorithm is the following, we will consider the quantum circuit into two quantum registers, the work register(W) and the ancilla (A):</p>
+
+<ul>
+  <li>
+    <p>0) Start with the state 
+<script type="math/tex">\left| \psi_1 \right> = \left| 1 \right>_A \left| 0 \right>_W</script></p>
+  </li>
+  <li>
+    <p>1) Apply a Hadamard on both qubits, the state will be:</p>
+  </li>
+</ul>
+
+<script type="math/tex; mode=display">\left| \psi_2 \right> =\frac{1}{2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right) \otimes \left( \left| 0 \right>_W + \left| 1 \right>_W \right)</script>
+
+<ul>
+  <li>2) Apply a Unitary operator, an oracle, such that:</li>
+</ul>
+
+<script type="math/tex; mode=display">U_f  \frac{1}{\sqrt 2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right)\left| x \right>_W = (-1)^{f(x)} \frac{1}{\sqrt 2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right)\left| x \right>_W</script>
+
+<p>The phase factor is “kicked back” on the front of the state, this will be useful to evaluate $f(x)$ with only one query. The state after $U_f$ is:</p>
+
+<script type="math/tex; mode=display">\left| \psi_3 \right> = \frac{1}{2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right) \otimes \left( (-1)^{f(0)}\left| 0 \right>_W   + (-1)^{f(1)}\left| 1 \right>_W \right)</script>
+
+<ul>
+  <li>3) Apply a Hadamard on the second qubit:</li>
+</ul>
+
+<script type="math/tex; mode=display">\left| \psi_3 \right> =\frac{1}{2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right) \otimes \left[ \left((-1)^{f(0)} + (-1)^{f(1)}\right) \left| 0 \right>_W + \left((-1)^{f(0)} - (-1)^{f(1)}\right)\left| 1 \right>_W \right]</script>
+
+<p>Now we have two cases:</p>
+
+<ul>
+  <li>If $f(0) = f(1)$ we will measure:
+ <script type="math/tex">\left| 0 \right>_W = \left| f(0) \oplus f(1) \right>_W</script></li>
+  <li>If $f(0) \neq f(1)$ we will measure:
+ <script type="math/tex">\left| 1 \right>_W = \left| f(0) \oplus f(1) \right>_W</script></li>
+</ul>
+
+<p>In this implementation the oracle (<script type="math/tex">U_f</script>) is a C-NOT gate, this will measure if the function is balanced.</p>
+
+<h1 id="4-implementation-on-qiskit">4) Implementation on Qiskit</h1>
+
+<p>We shall now implement this algorithm on Qiskit and run on a real Quantum Computer from IBMQ. 
+For this it is needed to define the oracle <script type="math/tex">U_f</script> exactly.</p>
+
+<h2 id="41-constructing-the-quantum-circuit">4.1) Constructing the Quantum Circuit</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">qiskit</span> <span class="k">as</span> <span class="n">qsk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">qreg_w</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">QuantumRegister</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'w'</span><span class="p">)</span>
+<span class="n">qreg_a</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">QuantumRegister</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'a'</span><span class="p">)</span>
+<span class="n">qc</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">qreg_w</span><span class="p">)</span>
+<span class="n">qc</span><span class="p">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">qreg_a</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>On Qiskit, all circuits are initialized on the state 00:</p>
+
+<script type="math/tex; mode=display">\left| \psi_0 \right> = \left| 00 \right></script>
+
+<p>Then we apply the X gate on the first register, in order to state be: 
+<script type="math/tex">\left| \psi_1 \right> = \left| 10 \right></script></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">qc</span><span class="p">.</span><span class="n">x</span><span class="p">(</span><span class="n">qreg_a</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Since the Haddamard gate is given by the following matrix on the computational basis:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+H = \frac{1}{\sqrt2}
+ \begin{pmatrix} 
+1 & 1\\
+1 & -1 \\
+\end{pmatrix} %]]></script>
+
+<p>Now the state is 
+<script type="math/tex">\left| \psi_2 \right> = \frac{1}{2} \left( \left| 0 \right> - \left| 1 \right> \right) \otimes \left( \left| 0 \right> + \left| 1 \right> \right)</script></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">qc</span><span class="p">.</span><span class="n">h</span><span class="p">(</span><span class="n">qreg_w</span><span class="p">);</span>
+<span class="n">qc</span><span class="p">.</span><span class="n">h</span><span class="p">(</span><span class="n">qreg_a</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Applying the CNOT, we have:</p>
+
+<script type="math/tex; mode=display">\left| \psi_3 \right> =  \frac{1}{2} \left[ \left| 0 \right> \otimes \left( \left| 0 \oplus 0 \right> + \left| 1 \oplus 0 \right> \right) - \left| 1 \right> \otimes \left( \left| 0 \oplus 1 \right> + \left| 1 \oplus 1 \right> \right)
+\right]</script>
+
+<script type="math/tex; mode=display">\left| \psi_3 \right> =  \frac{1}{2} \left[ \left| 0 \right> \otimes \left( \left| 0 \right> + \left| 1  \right> \right) 
+- \left| 1 \right> \otimes \left( \left|  1 \right> + \left| 0 \right> \right) \right]</script>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">qc</span><span class="p">.</span><span class="n">cx</span><span class="p">(</span><span class="n">qreg_w</span><span class="p">,</span><span class="n">qreg_a</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>After the Hadamard on the work qubit, we have that:</p>
+
+<script type="math/tex; mode=display">\left| \psi_4 \right> = \frac{1}{2} \left[ \left( \left| 0 \right> + \left| 1 \right> \right) \otimes \left( \left| 0 \right> + \left| 1  \right> \right) - \left( \left| 0 \right> - \left| 1 \right> \right) \otimes \left( \left|  1 \right> + \left| 0 \right> \right)
+\right]</script>
+
+<script type="math/tex; mode=display">\left| \psi_4 \right> =  \frac{1}{\sqrt2} 
+\left( 
+\left| 0 \right> - \left| 1 \right>
+\right) \otimes
+\left| 1 \right></script>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">qc</span><span class="p">.</span><span class="n">h</span><span class="p">(</span><span class="n">qreg_w</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="42-measuring-the-circuit">4.2) Measuring the circuit</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">creg</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">ClassicalRegister</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">'c'</span><span class="p">)</span>
+<span class="n">qc</span><span class="p">.</span><span class="n">add_register</span><span class="p">(</span><span class="n">creg</span><span class="p">)</span>
+<span class="n">qc</span><span class="p">.</span><span class="n">measure</span><span class="p">(</span><span class="n">qreg_w</span><span class="p">,</span><span class="n">creg</span><span class="p">)</span>
+<span class="n">qc</span><span class="p">.</span><span class="n">draw</span><span class="p">(</span><span class="n">output</span><span class="o">=</span><span class="s">'mpl'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/n-blog/assets/2020-06-18-Deutsch_files/2020-06-18-Deutsch_18_0.svg" /></p>
+
+<h2 id="43-running-experiments">4.3) Running Experiments</h2>
+
+<h3 id="431-using-qasm_simulator">4.3.1) Using qasm_simulator</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">backend_sim</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">Aer</span><span class="p">.</span><span class="n">get_backend</span><span class="p">(</span><span class="s">'qasm_simulator'</span><span class="p">)</span>
+<span class="n">job_sim</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">backend_sim</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<span class="n">result_sim</span> <span class="o">=</span> <span class="n">job_sim</span><span class="p">.</span><span class="n">result</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">result_sim</span><span class="p">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<span class="n">plot_histogram</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/n-blog/assets/2020-06-18-Deutsch_files/2020-06-18-Deutsch_22_0.svg" /></p>
+
+<h3 id="431-running-on-ibmq">4.3.1) Running on IBMQ</h3>
+
+<p>We will choose the least busy backend with at least 2 qubits:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">qiskit</span> <span class="kn">import</span> <span class="n">IBMQ</span>
+<span class="kn">from</span> <span class="nn">qiskit.providers.ibmq</span> <span class="kn">import</span> <span class="n">least_busy</span>
+
+<span class="n">provider</span> <span class="o">=</span> <span class="n">IBMQ</span><span class="p">.</span><span class="n">load_account</span><span class="p">();</span>
+<span class="n">num_qubits</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">least_busy</span><span class="p">(</span><span class="n">provider</span><span class="p">.</span><span class="n">backends</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">.</span><span class="n">configuration</span><span class="p">().</span><span class="n">n_qubits</span> <span class="o">&gt;=</span> <span class="n">num_qubits</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">x</span><span class="p">.</span><span class="n">configuration</span><span class="p">().</span><span class="n">simulator</span> <span class="ow">and</span> <span class="n">x</span><span class="p">.</span><span class="n">status</span><span class="p">().</span><span class="n">operational</span><span class="o">==</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">backend</span>
+
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;IBMQBackend('ibmq_burlington') from IBMQ(hub='ibm-q', group='open', project='main')&gt; ```
+</code></pre></div></div>
+
+<p>Submiting the job for the IBM Q platform</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">qiskit.tools.monitor</span> <span class="kn">import</span> <span class="n">job_monitor</span>
+
+<span class="n">job_exp</span> <span class="o">=</span> <span class="n">qsk</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+<span class="n">job_monitor</span><span class="p">(</span><span class="n">job_exp</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Job Status: job has successfully run
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">result_exp</span> <span class="o">=</span> <span class="n">job_exp</span><span class="p">.</span><span class="n">result</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">qiskit.visualization</span> <span class="kn">import</span> <span class="n">plot_histogram</span>
+<span class="n">counts_exp</span> <span class="o">=</span> <span class="n">result_exp</span><span class="p">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">qc</span><span class="p">)</span>
+<span class="n">plot_histogram</span><span class="p">([</span><span class="n">counts_exp</span><span class="p">,</span><span class="n">counts</span><span class="p">],</span> <span class="n">legend</span><span class="o">=</span><span class="p">[</span><span class="s">'Device'</span><span class="p">,</span> <span class="s">'Simulator'</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p><img src="/n-blog/assets/2020-06-18-Deutsch_files/2020-06-18-Deutsch_28_0.svg" /></p>
+
+<p>This shows that the real quantum computer has error associated with it, for this algorithm we still have the majority of states on the 1 state. This error can be mitigated by some methods, that I will show in the future.</p>
+
+<h1 id="references">References</h1>
+
+<p>1 -  Michael A. Nielsen and Isaac L. Chuang.Quantum Computation and Quantum Information:  10th Anniversary Edition.Cambridge University Press, 2010</p>
+
+<p>2 -   Giuliano Benenti, Giulio Casati, and Giuliano Strini.Principles  of  Quantum  Computation  and  Information.  World Scientific, 2004.</p>
+
+<hr />
+
+<h3>Version Information</h3>
+<table><tr><th>Qiskit Software</th><th>Version</th></tr><tr><td>Qiskit</td><td>0.19.1</td></tr><tr><td>Terra</td><td>0.14.1</td></tr><tr><td>Aer</td><td>0.5.1</td></tr><tr><td>Ignis</td><td>0.3.0</td></tr><tr><td>Aqua</td><td>0.7.0</td></tr><tr><td>IBM Q Provider</td><td>0.7.0</td></tr><tr><th>System information</th></tr><tr><td>Python</td><td>3.7.3 | packaged by conda-forge | (default, Jul  1 2019, 21:52:21) 
+[GCC 7.3.0]</td></tr><tr><td>OS</td><td>Linux</td></tr><tr><td>CPUs</td><td>2</td></tr><tr><td>Memory (Gb)</td><td>7.664028167724609</td></tr><tr><td colspan="2">Thu Jun 18 13:23:43 2020 -03</td></tr></table>
+
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">N-Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>N-Blog</li>
+          <li><a href="mailto:nahumsa@cbpf.br">nahumsa@cbpf.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/nahumsa"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">nahumsa</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/sa_nahum"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">sa_nahum</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Here I will share thoughts and ideas about Machine Learning  and Quantum Computing.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
