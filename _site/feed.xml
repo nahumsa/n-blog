@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 22 Jun 2020 18:41:37 -0300</pubDate>
-    <lastBuildDate>Mon, 22 Jun 2020 18:41:37 -0300</lastBuildDate>
+    <pubDate>Mon, 22 Jun 2020 18:44:14 -0300</pubDate>
+    <lastBuildDate>Mon, 22 Jun 2020 18:44:14 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
     
       <item>
@@ -330,7 +330,7 @@ Base measured Z
 
 &lt;p&gt;Consider an oracle evaluating a 1 bit boolean function &lt;script type=&quot;math/tex&quot;&gt;f: \{ 0,1\} \rightarrow \{ 0,1\}&lt;/script&gt; we want to know if the function is constant ( &lt;script type=&quot;math/tex&quot;&gt;f(0) = 0&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;f(1) = 1&lt;/script&gt;) or balanced ( &lt;script type=&quot;math/tex&quot;&gt;f(0) = 1&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;f(1) = 0&lt;/script&gt;).&lt;/p&gt;
 
-&lt;p&gt;For a classical deterministic computer it is needed two queries, therefore you need to test 2 diferent bits and see the outputs, for instance if $f(0) = 0$ and $f(1) = 1$ you know that the function is constant.&lt;/p&gt;
+&lt;p&gt;For a classical deterministic computer it is needed two queries, therefore you need to test 2 diferent bits and see the outputs, for instance if &lt;script type=&quot;math/tex&quot;&gt;f(0) = 0&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;f(1) = 1&lt;/script&gt; you know that the function is constant.&lt;/p&gt;
 
 &lt;p&gt;For a quantum computer this can be done with only one query. This is done with the Deutsch algorithm, the idea is to check if it is balanced, if it is not balanced it is constant.&lt;/p&gt;
 
@@ -355,7 +355,7 @@ Base measured Z
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;U_f  \frac{1}{\sqrt 2} \left( \left| 0 \right&gt;_A - \left| 1 \right&gt;_A \right)\left| x \right&gt;_W = (-1)^{f(x)} \frac{1}{\sqrt 2} \left( \left| 0 \right&gt;_A - \left| 1 \right&gt;_A \right)\left| x \right&gt;_W&lt;/script&gt;
 
-&lt;p&gt;The phase factor is “kicked back” on the front of the state, this will be useful to evaluate $f(x)$ with only one query. The state after $U_f$ is:&lt;/p&gt;
+&lt;p&gt;The phase factor is “kicked back” on the front of the state, this will be useful to evaluate $f(x)$ with only one query. The state after &lt;script type=&quot;math/tex&quot;&gt;U_f&lt;/script&gt; is:&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\left| \psi_3 \right&gt; = \frac{1}{2} \left( \left| 0 \right&gt;_A - \left| 1 \right&gt;_A \right) \otimes \left( (-1)^{f(0)}\left| 0 \right&gt;_W   + (-1)^{f(1)}\left| 1 \right&gt;_W \right)&lt;/script&gt;
 
@@ -368,9 +368,9 @@ Base measured Z
 &lt;p&gt;Now we have two cases:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;If $f(0) = f(1)$ we will measure:
+  &lt;li&gt;If &lt;script type=&quot;math/tex&quot;&gt;f(0) = f(1)&lt;/script&gt; we will measure:
  &lt;script type=&quot;math/tex&quot;&gt;\left| 0 \right&gt;_W = \left| f(0) \oplus f(1) \right&gt;_W&lt;/script&gt;&lt;/li&gt;
-  &lt;li&gt;If $f(0) \neq f(1)$ we will measure:
+  &lt;li&gt;If &lt;script type=&quot;math/tex&quot;&gt;f(0) \neq f(1)&lt;/script&gt; we will measure:
  &lt;script type=&quot;math/tex&quot;&gt;\left| 1 \right&gt;_W = \left| f(0) \oplus f(1) \right&gt;_W&lt;/script&gt;&lt;/li&gt;
 &lt;/ul&gt;
 

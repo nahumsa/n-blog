@@ -91,7 +91,7 @@
 
 <p>Consider an oracle evaluating a 1 bit boolean function <script type="math/tex">f: \{ 0,1\} \rightarrow \{ 0,1\}</script> we want to know if the function is constant ( <script type="math/tex">f(0) = 0</script> and <script type="math/tex">f(1) = 1</script>) or balanced ( <script type="math/tex">f(0) = 1</script> and <script type="math/tex">f(1) = 0</script>).</p>
 
-<p>For a classical deterministic computer it is needed two queries, therefore you need to test 2 diferent bits and see the outputs, for instance if $f(0) = 0$ and $f(1) = 1$ you know that the function is constant.</p>
+<p>For a classical deterministic computer it is needed two queries, therefore you need to test 2 diferent bits and see the outputs, for instance if <script type="math/tex">f(0) = 0</script> and <script type="math/tex">f(1) = 1</script> you know that the function is constant.</p>
 
 <p>For a quantum computer this can be done with only one query. This is done with the Deutsch algorithm, the idea is to check if it is balanced, if it is not balanced it is constant.</p>
 
@@ -116,7 +116,7 @@
 
 <script type="math/tex; mode=display">U_f  \frac{1}{\sqrt 2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right)\left| x \right>_W = (-1)^{f(x)} \frac{1}{\sqrt 2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right)\left| x \right>_W</script>
 
-<p>The phase factor is “kicked back” on the front of the state, this will be useful to evaluate $f(x)$ with only one query. The state after $U_f$ is:</p>
+<p>The phase factor is “kicked back” on the front of the state, this will be useful to evaluate $f(x)$ with only one query. The state after <script type="math/tex">U_f</script> is:</p>
 
 <script type="math/tex; mode=display">\left| \psi_3 \right> = \frac{1}{2} \left( \left| 0 \right>_A - \left| 1 \right>_A \right) \otimes \left( (-1)^{f(0)}\left| 0 \right>_W   + (-1)^{f(1)}\left| 1 \right>_W \right)</script>
 
@@ -129,9 +129,9 @@
 <p>Now we have two cases:</p>
 
 <ul>
-  <li>If $f(0) = f(1)$ we will measure:
+  <li>If <script type="math/tex">f(0) = f(1)</script> we will measure:
  <script type="math/tex">\left| 0 \right>_W = \left| f(0) \oplus f(1) \right>_W</script></li>
-  <li>If $f(0) \neq f(1)$ we will measure:
+  <li>If <script type="math/tex">f(0) \neq f(1)</script> we will measure:
  <script type="math/tex">\left| 1 \right>_W = \left| f(0) \oplus f(1) \right>_W</script></li>
 </ul>
 
