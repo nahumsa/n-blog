@@ -10,12 +10,12 @@ tags: Quantum-Computing Qiskit
 
 Let's try to do the tomography of a given one-qubit quantum state just to understand the principle behind this procedure:
 
-\begin{equation}
+$$
     \rho = \begin{pmatrix}
                 \rho_{11} & \rho_{12} \\
                 \rho_{21} & \rho_{22}
            \end{pmatrix} =  \frac{1}{2} \sum_{i=0}^3 S_i \sigma_i
-\end{equation}
+$$
 
 Where  $$\rho_{11} + \rho_{22} = 1$$, $$\rho_{12} = \rho_{21}^*$$, and $$\sigma_i$$ are the pauli matrices. 
 
