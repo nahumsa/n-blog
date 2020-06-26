@@ -6,9 +6,173 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 23 Jun 2020 09:38:45 -0300</pubDate>
-    <lastBuildDate>Tue, 23 Jun 2020 09:38:45 -0300</lastBuildDate>
+    <pubDate>Fri, 26 Jun 2020 17:19:42 -0300</pubDate>
+    <lastBuildDate>Fri, 26 Jun 2020 17:19:42 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
+    
+      <item>
+        <title>Elementary Cellular Automata</title>
+        <description>&lt;h1 id=&quot;1-introduction&quot;&gt;1) Introduction&lt;/h1&gt;
+
+&lt;p&gt;Cellular Automata is a discrete model that can create complex behaviors by using simple rules. The cellular automata is constructed on a grid with a finite number of states with a deterministic rule for evolution, the surprising fact is that by using a deterministic rule there can be complex behavior that we could not foreseen just by looking on the rule. This model was developed by remarkable people such as Von Neumann, Ulam, Bariccelli. I had contact with this model by Stephen Wolfram’s book &lt;a href=&quot;https://www.wolframscience.com/nks/&quot;&gt;A new kind of science&lt;/a&gt;. Which is a remarkable, but controversial, book that fascinated me when I was starting in physics at the 2010s.&lt;/p&gt;
+
+&lt;h1 id=&quot;2-elementary-cellular-automata&quot;&gt;2) Elementary Cellular Automata&lt;/h1&gt;
+
+&lt;p&gt;Cellular Automata are the simplest kind of program possible, but they present complex behaviors that we cannot predict from the rules alone. This is a recurring theme in nature, simple local rules can give complex global structures. Another remarkable fact is that one rule of the Cellular Automata is &lt;a href=&quot;https://en.wikipedia.org/wiki/Turing_completeness&quot;&gt;Turing Complete&lt;/a&gt;, which shows that we can create any computer program by using this rule, showing Turing completeness of this rule is totaly non-trivial, but I refer to the Paper by &lt;a href=&quot;https://wpmedia.wolfram.com/uploads/sites/13/2018/02/15-1-1.pdf&quot;&gt;Matthew Cook&lt;/a&gt; that shows this fact. Maybe in the future I will do a post about this proof which I find really beautiful.&lt;/p&gt;
+
+&lt;h2 id=&quot;21-general-rule&quot;&gt;2.1) General Rule&lt;/h2&gt;
+
+&lt;p&gt;Let’s start with the simplest cellular automata which is 1D with only neighboring interactions (if we have a cell at position i it will only interact with positions i-1 and i+1) and has only two states on and off.&lt;/p&gt;
+
+&lt;p&gt;At each iteration we need to give a rule in order to update our array. Each rule needs 3 cells as an input and outputs only one cell, therefore we have &lt;script type=&quot;math/tex&quot;&gt;2^3&lt;/script&gt; possible combinations for each cell can be black or white, thus we have &lt;script type=&quot;math/tex&quot;&gt;2^{2^3} = 256&lt;/script&gt; rules. Since this number can be represented in binary the simplest way to create a rule is to write the number of the rule in binary, this will give the exact output of the rule. As we can see some examples below:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-06-26-Cellular-Automata/Rule_0.jpg&quot; /&gt;&lt;/p&gt;
+&lt;h1 style=&quot;text-align:center;&quot;&gt;$$1_{10} = 00000000_2$$&lt;/h1&gt;
+&lt;hr /&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-06-26-Cellular-Automata/Rule_1.jpg&quot; /&gt;&lt;/p&gt;
+&lt;h1 style=&quot;text-align:center;&quot;&gt;$$1_{10} = 00000001_2$$&lt;/h1&gt;
+&lt;hr /&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-06-26-Cellular-Automata/Rule_30.jpg&quot; /&gt;&lt;/p&gt;
+&lt;h1 style=&quot;text-align:center;&quot;&gt;$$1_{10} = 00001110_2$$&lt;/h1&gt;
+&lt;hr /&gt;
+
+&lt;h2 id=&quot;22-taxonomy-of-elementary-cellular-automata&quot;&gt;2.2) Taxonomy of Elementary Cellular Automata&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.stephenwolfram.com/publications/academic/algebraic-properties-cellular-automata.pdf&quot;&gt;Martin, Odlyzko and Wolfram&lt;/a&gt; studied all those rules and classified into 4 categories depending on the behavior of random inputs of the rule:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Category I: The Cellular Automata evolves to a stationary state.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Category II: The Cellular Automata evolves into a periodic configuration, each cell has a defined period to return to the original state.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Category III: The Cellular Automata evolves into a periodic configuration.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Category IV: This category collects all Cellular Automata that are not in class I,II, and III.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;23-implementation-in-python&quot;&gt;2.3) Implementation in Python&lt;/h2&gt;
+
+&lt;p&gt;In this implentation I chose to do with periodic boundary conditions, therefore if you have a cell with in the far right it will be neighbor with the cell in the far left. Let’s walk through the program:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1) Convert the rule number into binary and check if the size of this binary is 8, if it is not 8, fill the left values with 0 until it has size eight.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2) We use the order defined by Wolfram to map 8-bitstring into the conditions of the Cellular Automata.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;3) We set the initial state of the Cellular Automata&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;4) In this step we do the time evolution of the Cellular Automata, this is done in three parts:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;4.1) We ignore the initial state that we put on step 3 skipping the first line.&lt;/li&gt;
+      &lt;li&gt;4.2) We run over the 8-bitstring and apply the rule.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Elementary_Automata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;Function to construct an Elementary Cellular 
+    automata given by a rule N with periodic Boundary 
+    Conditions.
+    
+    Parameters
+    -------------------------------------------------
+    N: Rule (int)
+    T: Number of steps (int)
+    n: Number of the lattice (int)
+    start(default = None): Starting Configuration of 
+                           the lattice. (list)
+                           
+    Outputs
+    -------------------------------------------------
+    A: Matrix with the cellular automata evolution
+       (np.array)
+    
+    &quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 1)
+&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;#Transform to a bit-string
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;N_Bit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:]&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;#Check if the number is an 8-Bit string 
+&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;#if not, you add 0 on the right of the string.
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N_Bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;ad&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N_Bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;aux&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ad&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;N_E_Bit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;aux&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N_Bit&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;N_E_Bit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;N_Bit&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;# 2)
+&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;# States defined by wolfram
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;States&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'111'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'110'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'101'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'100'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'011'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'010'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'001'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'000'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;#Building a Matrix
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    
+    &lt;span class=&quot;c1&quot;&gt;# 3)
+&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;#Choose a starting state
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# 4)
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ndenumerate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# 4.1)
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# 4.2)
+&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;N_E_Bit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;States&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;                
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; 
+                    &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;S&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                    &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;24-examples-of-elementary-cellular-automatas&quot;&gt;2.4) Examples of Elementary Cellular Automatas&lt;/h2&gt;
+
+&lt;p&gt;Here are some examples:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Rule 30&lt;/strong&gt;: This rule has been shown to have chaotic behavior and can be used as a random number generator, as it is by the wolfram language:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-06-26-Cellular-Automata/CA_30.png&quot; /&gt;&lt;/p&gt;
+&lt;h1 style=&quot;text-align:center;&quot;&gt;Rule 30&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Rule 90&lt;/strong&gt;: This rule produces a fractal that is known as the Sierpinsky Triangle, which comes up when you have the binomial coefficient &lt;script type=&quot;math/tex&quot;&gt;\binom{N}{k} \mod 2&lt;/script&gt;. That is, if we construct the Pascal’s Triangle mod 2 we have the Sierpinsky Triangle. This is also known as an &lt;a href=&quot;https://mathworld.wolfram.com/AdditiveCellularAutomaton.html&quot;&gt;additive cellular automaton&lt;/a&gt;, because of the relation with mod 2.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-06-26-Cellular-Automata/CA_90.png&quot; /&gt;&lt;/p&gt;
+&lt;h1 style=&quot;text-align:center;&quot;&gt;Rule 90&lt;/h1&gt;
+
+&lt;p&gt;If you want to build your own Elementary Cellular Automata, the source code for the 1D Cellular Automata is on &lt;a href=&quot;https://github.com/nahumsa/Cellular-Automata/blob/master/Cellular_Automata.ipynb&quot;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
+
+&lt;p&gt;(1) - &lt;a href=&quot;https://www.jstor.org/stable/j.ctt1vwmgzt&quot;&gt;Paul Charbonneau - Natural Complexity: A Modeling Handbook&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;(2) - &lt;a href=&quot;https://www.wolframscience.com/nks/&quot;&gt;Wolfram - New Kind of science&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 26 Jun 2020 08:00:00 -0300</pubDate>
+        <link>http://localhost:4000/n-blog/2020/06/26/Cellular-Automata.html</link>
+        <guid isPermaLink="true">http://localhost:4000/n-blog/2020/06/26/Cellular-Automata.html</guid>
+        
+        <category>Programming</category>
+        
+        <category>Cellular-Automata</category>
+        
+        
+      </item>
     
       <item>
         <title>Quantum State Tomography</title>
