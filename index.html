@@ -13,7 +13,7 @@ layout: default
         <span>
           {% for tag in post.tags %}
             {% capture tag_name %}{{ tag }}{% endcapture %}
-            <a class="post-tag" href="/n-blog/tag/{{ tag_name }}"><nobr>{{ tag_name }}</nobr>&nbsp;</a>
+            <a class="post-tag" href="/n-blog/tag/_{{ tag_name }}"><nobr>{{ tag_name }}</nobr>&nbsp;</a>
           {% endfor %}
         </span>
         <h2>
