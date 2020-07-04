@@ -6,9 +6,402 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 26 Jun 2020 17:41:19 -0300</pubDate>
-    <lastBuildDate>Fri, 26 Jun 2020 17:41:19 -0300</lastBuildDate>
+    <pubDate>Sat, 04 Jul 2020 18:32:21 -0300</pubDate>
+    <lastBuildDate>Sat, 04 Jul 2020 18:32:21 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
+    
+      <item>
+        <title>Grover Algorithm</title>
+        <description>&lt;h1 id=&quot;grovers-algorithm&quot;&gt;Grover’s Algorithm&lt;/h1&gt;
+
+&lt;h1 id=&quot;1-introduction&quot;&gt;1) Introduction&lt;/h1&gt;
+
+&lt;p&gt;Grover’s algorithm is useful for searching an unstructured database with N elements. For instance,you have a phone number and want to find the corresponding name associated to this phone number, since it is unstructured you need to check every element (in the worst case scenario), but if you have the solution it is easy to check, this shows that the problem is NP.&lt;/p&gt;
+
+&lt;p&gt;In order to show Grover’s algorithm we need to rephrase as an oracle problem: Labelling each element of the database &lt;script type=&quot;math/tex&quot;&gt;\{0,1, \dots, N-1 \}&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;x_0&lt;/script&gt; the unknown marked item. The oracle &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; computes the following binary function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+f: \{0,1 \}^N \rightarrow \{0,1 \} \hspace{1em} , \hspace{1em} \mathrm{with} \hspace{2em} f(x) = \begin{cases}
+    1, &amp; \text{if } x=x_0\\
+    0, &amp; \text{otherwise}
+\end{cases} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;For a classical computer, the probability to find &lt;script type=&quot;math/tex&quot;&gt;x_0&lt;/script&gt; is &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{N}&lt;/script&gt; , so to find &lt;script type=&quot;math/tex&quot;&gt;x_0&lt;/script&gt; with probability &lt;script type=&quot;math/tex&quot;&gt;p&lt;/script&gt; is needed &lt;script type=&quot;math/tex&quot;&gt;p N = \mathcal{O}(N)&lt;/script&gt; oracle queries. Grovers showed that on a quantum computer we can have a quadratic speedup, then we will need &lt;script type=&quot;math/tex&quot;&gt;\mathcal{O}(\sqrt{N})&lt;/script&gt; queries. This is not massive, but we can compare this speedup with the breakthrough that Fast Fourier Transform(FFT) did for signalling processing.&lt;/p&gt;
+
+&lt;h1 id=&quot;2-general-algorithm&quot;&gt;2) General Algorithm&lt;/h1&gt;
+
+&lt;h2 id=&quot;21-algorithm&quot;&gt;2.1) Algorithm&lt;/h2&gt;
+
+&lt;p&gt;Here we suppose a quantum oracle with the ability to recognize solutions to the search problem. This recognition is signaled by making use of an oracle qubit. More precisely:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;| x \rangle | q \rangle  \xrightarrow[]{O} | x \rangle | q \oplus f(x) \rangle&lt;/script&gt;
+
+&lt;p&gt;The oracle &lt;script type=&quot;math/tex&quot;&gt;| q \rangle&lt;/script&gt; is a single qubit which is flipped if &lt;script type=&quot;math/tex&quot;&gt;f(x) = 1&lt;/script&gt; and is unchanged otherwise. We can check if whether x is a solution by preparing 
+&lt;script type=&quot;math/tex&quot;&gt;| x \rangle| 0 \rangle&lt;/script&gt;
+and seeing if the oracle qubit flips when using the oracle.&lt;/p&gt;
+
+&lt;p&gt;It is common to use 
+&lt;script type=&quot;math/tex&quot;&gt;| q \rangle = \frac{1}{\sqrt{2}} \big( | 0 \rangle - | 1 \rangle \big)&lt;/script&gt;
+. The action of the oracle is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;| x \rangle \frac{1}{\sqrt{2}} \big( | 0 \rangle - | 1 \rangle \big) \xrightarrow[]{O} (-1)^{f(x)} | x \rangle \frac{1}{\sqrt{2}} \big( | 0 \rangle - | 1 \rangle \big)&lt;/script&gt;
+
+&lt;p&gt;Using this type of oracle qubit it remains the same when applying the oracle and can be omitted from the following steps of the algorithm. With this convention:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;| x \rangle \xrightarrow[]{O} (-1)^{f(x)}| x \rangle&lt;/script&gt;
+
+&lt;p&gt;The oracle marks the solution by shifting the phase. For a N item search problem with M solutions, we need to apply the search oracle &lt;script type=&quot;math/tex&quot;&gt;O(\sqrt{\frac{N}{M}})&lt;/script&gt; times in order to obtain the solution.&lt;/p&gt;
+
+&lt;p&gt;The algorithm with the Grover operator G is the following:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/GroverCircuit.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;Figure 1: Circuit for the Grover Algorithm, the unitary G are called Grover Iterations or Grover Operator&lt;/p&gt;
+
+&lt;p&gt;The algorithm begins with 
+&lt;script type=&quot;math/tex&quot;&gt;| 0 \rangle^{\otimes N}&lt;/script&gt;
+. The Haddamard transform put in the equal superposition state, which we call 
+&lt;script type=&quot;math/tex&quot;&gt;| \psi \rangle&lt;/script&gt;
+:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;| \psi \rangle = \frac{1}{\sqrt{N}} \sum_{x=0}^{N-1} | x \rangle&lt;/script&gt;
+
+&lt;p&gt;The algorithm consists of repeated applications of the grover operator G. This subroutine can be broken up into 4 steps:&lt;/p&gt;
+
+&lt;p&gt;(1): Apply the oracle O.&lt;/p&gt;
+
+&lt;p&gt;(2): Apply the Haddamard transform &lt;script type=&quot;math/tex&quot;&gt;H^{\otimes N}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;(3): Perform a conditional phase shift on the computer, with every computational basis state except 
+&lt;script type=&quot;math/tex&quot;&gt;| 0 \rangle&lt;/script&gt;
+ receiving a phase shift of -1: 
+ &lt;script type=&quot;math/tex&quot;&gt;| x \rangle \xrightarrow[]{M} -(-1)^{\delta_{x0}} | x \rangle&lt;/script&gt;
+ .&lt;/p&gt;
+
+&lt;p&gt;(4): Apply the Haddamard transform &lt;script type=&quot;math/tex&quot;&gt;H^{\otimes N}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;The circuit for the Grover operator is the following:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/GroverOperator.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;Figure 2: Circuit for the Grover Operator G.&lt;/p&gt;
+
+&lt;p&gt;This operator for the conditional phase shift on step (2) is simply 
+&lt;script type=&quot;math/tex&quot;&gt;M = 2 | 0 \rangle \langle 0 | - I&lt;/script&gt;
+, because we have:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+M = \begin{pmatrix}
+    2-1 &amp; 0  &amp; \dots &amp; 0 \\
+    0   &amp; -1 &amp; \dots &amp; 0 \\
+    \vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+    0 &amp; \dots &amp; 0 &amp; -1 
+    \end{pmatrix} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Steps 2 and 4 needs &lt;script type=&quot;math/tex&quot;&gt;n=\log(N)&lt;/script&gt; operations each. Step 3, the conditional phase shift, can be implemented using &lt;script type=&quot;math/tex&quot;&gt;O(n)&lt;/script&gt; gates. But the cost of the Oracle depends on the application, on the bright side, we only need to call the oracle once. The steps 2,3,4 combined are:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;H^{\otimes n} \big( 2 | 0 \rangle \langle 0 | - I \big) H^{\otimes n} = 2 | \psi \rangle \langle \psi |&lt;/script&gt;
+
+&lt;p&gt;Where 
+&lt;script type=&quot;math/tex&quot;&gt;| \psi \rangle&lt;/script&gt; 
+is the weighted superposition. Thus: 
+&lt;script type=&quot;math/tex&quot;&gt;G = \big( 2| \psi \rangle \langle \psi | - I \big) O&lt;/script&gt;
+. Let’s see how the operator 
+&lt;script type=&quot;math/tex&quot;&gt;2| \psi \rangle \langle \psi | - I&lt;/script&gt;
+acts on an arbitrary state: 
+&lt;script type=&quot;math/tex&quot;&gt;| \eta \rangle = \sum_k \alpha_k | k \rangle&lt;/script&gt;
+:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{split}
+    \bigg( 2| \psi \rangle \langle \psi | - I \bigg) | \eta \rangle &amp; = \bigg( 2| \psi \rangle \langle \psi | - I \bigg) \sum_k \alpha_k |k \rangle \\ 
+    &amp; = \bigg[ \frac{2}{N} \sum_{x,y} | x \rangle \langle y | - I \bigg] \sum_k \alpha_k |k \rangle = \frac{2}{N} \sum_{x,y,k} \alpha_k | x \rangle \langle y | | k \rangle - \sum_k \alpha_k | k \rangle \\
+    &amp; = \frac{2}{N} \sum_{x,k} \alpha_k | x \rangle - | \eta  \rangle  = 2 \overbrace{\sum_{k} \frac{\alpha_k}{N}}^{\equiv \langle \alpha \rangle} \sum_x | x \rangle - | \eta \rangle \\
+    &amp; = 2 \sum_x \langle \alpha \rangle | x \rangle - \sum_k \alpha_k | k \rangle = \sum_k \bigg[ - \alpha_k + 2 \langle \alpha \rangle \bigg] | k \rangle
+\end{split} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;For this reason, sometimes this operator is called the inversion about the mean.&lt;/p&gt;
+
+&lt;h2 id=&quot;22-geometric-representation&quot;&gt;2.2) Geometric Representation&lt;/h2&gt;
+
+&lt;p&gt;We can have a geometric visualization of the algorithm that will help us to show that the algorithm needs &lt;script type=&quot;math/tex&quot;&gt;O(\sqrt{N})&lt;/script&gt; gates, for this we want to show that the Grover Operator can be regarded as a rotation in the 2D space spanned by the starting vector 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle&lt;/script&gt; 
+and the state with the uniform superposition of solutions to the search problem. We adopt the convention &lt;script type=&quot;math/tex&quot;&gt;\sum_x^{'}&lt;/script&gt; to be the sum over all x which are solutions to the search problem, and &lt;script type=&quot;math/tex&quot;&gt;\sum_x''&lt;/script&gt; to be the sum over all x which are not solutions. We also define the normalized states:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;| \alpha \rangle \equiv \frac{1}{\sqrt{N-M}} \sum_x '' |x \rangle \ \ \ \ | \beta \rangle \equiv \frac{1}{\sqrt{M}} \sum_x ' | x \rangle&lt;/script&gt;
+
+&lt;p&gt;We can rewrite 
+&lt;script type=&quot;math/tex&quot;&gt;| \psi \rangle&lt;/script&gt; 
+in terms of 
+&lt;script type=&quot;math/tex&quot;&gt;| \alpha \rangle&lt;/script&gt;
+ and 
+ &lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+ :&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{split}
+    | \psi \rangle &amp; =  \frac{1}{\sqrt{N}} \sum_x | x \rangle = \frac{1}{\sqrt{N}} \bigg( \sum_x ' | x \rangle + \sum_x '' | x \rangle \bigg)  \\
+     &amp; = \frac{1}{\sqrt{N}} \bigg( \sqrt{M} | \beta \rangle + \sqrt{N-M} | \alpha \rangle \bigg) \\
+     &amp; = \sqrt{\frac{N-M}{N}} | \alpha \rangle + \sqrt{\frac{M}{N}} | \beta \rangle
+    \end{split} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;So that the initial state is spanned by 
+&lt;script type=&quot;math/tex&quot;&gt;| \alpha \rangle&lt;/script&gt; 
+and 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+. The effect of G can be understood in a beautiful way by showing that the oracle &lt;script type=&quot;math/tex&quot;&gt;O&lt;/script&gt; performs a reflection about the vector 
+&lt;script type=&quot;math/tex&quot;&gt;| \alpha \rangle&lt;/script&gt; 
+and &lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+. That is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O ( a |\alpha \rangle + b | \beta \rangle) = a | \alpha \rangle - b | \beta \rangle&lt;/script&gt;
+
+&lt;p&gt;Similarly, 
+&lt;script type=&quot;math/tex&quot;&gt;2 |\psi \rangle \langle \psi | - I&lt;/script&gt; 
+also performs a reflection in the plane about the vector 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle&lt;/script&gt;
+. The product of two reflections is a rotation!&lt;/p&gt;
+
+&lt;p&gt;Thus 
+&lt;script type=&quot;math/tex&quot;&gt;G^k| \psi \rangle&lt;/script&gt; 
+remains in the space spanned by 
+&lt;script type=&quot;math/tex&quot;&gt;|\alpha \rangle&lt;/script&gt; 
+and 
+&lt;script type=&quot;math/tex&quot;&gt;|\beta \rangle&lt;/script&gt;
+. 
+Let 
+&lt;script type=&quot;math/tex&quot;&gt;\cos \big( \frac{\theta}{2} \big) = \sqrt{\frac{N- M}{N}}&lt;/script&gt;
+, so that 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle = \cos \frac{\theta}{2} |\alpha \rangle + \sin \frac{\theta}{2} |\beta\rangle&lt;/script&gt;
+. Let’s see what happens on a grover iteration:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/Grover.jpg&quot; /&gt;&lt;/p&gt;
+&lt;p style=&quot;text-align:center;&quot;&gt;Figure 3: Geometric representation of the Grover Iteration&lt;/p&gt;
+
+&lt;p&gt;We see from the figure that:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G | \psi \rangle = \cos \frac{3 \theta}{2} | \alpha \rangle + \sin \frac{3 \theta}{2} | \beta \rangle&lt;/script&gt;
+
+&lt;p&gt;So the rotation is equal to &lt;script type=&quot;math/tex&quot;&gt;\theta&lt;/script&gt;. It follows that after k iterations of G, we have:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;G^k | \psi \rangle = \cos \bigg( \frac{2k + 1}{2} \theta \bigg) | \alpha \rangle + \sin \bigg( \frac{2k + 1}{2} \theta \bigg) | \beta \rangle&lt;/script&gt;
+
+&lt;p&gt;Thus, in the 
+&lt;script type=&quot;math/tex&quot;&gt;\{ | \alpha \rangle, | \beta \rangle \}&lt;/script&gt; 
+basis, we can write the Grover iteration as:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+G = \begin{bmatrix}
+    \cos \theta &amp; - \sin \theta \\
+    \sin \theta &amp; \cos \theta
+    \end{bmatrix} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Where &lt;script type=&quot;math/tex&quot;&gt;\theta \in [0, \frac{\pi}{2}]&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;\sin \theta = \sin \bigg( \frac{\theta}{2} + \frac{\theta}{2} \bigg) = 2 \sin \frac{\theta}{2} \cos \frac{\theta}{2} \Rightarrow \sin \theta = 2 \frac{\sqrt{M(N-M)}}{N}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;In conclusion, the grover iteration acts as a rotation towards 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt; 
+in the space spanned by 
+&lt;script type=&quot;math/tex&quot;&gt;\{ | \alpha \rangle, | \beta \rangle \}&lt;/script&gt;
+, so repeated applications of G are required for us to measure 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt; 
+with high probability.&lt;/p&gt;
+
+&lt;h2 id=&quot;23-performance-of-the-algorithm&quot;&gt;2.3) Performance of the Algorithm&lt;/h2&gt;
+
+&lt;p&gt;How many times we need to repeat the Grover operator in order to rotate 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle&lt;/script&gt; 
+near 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+?&lt;/p&gt;
+
+&lt;p&gt;The initial system starts with 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle = \sqrt{\frac{N-M}{N}} | \alpha \rangle + \sqrt{\frac{M}{N}} | \beta \rangle&lt;/script&gt;
+, so rotating through &lt;script type=&quot;math/tex&quot;&gt;\arccos \sqrt{\frac{M}{N}}&lt;/script&gt; radians takes the system to 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+. Let denote the closest integer to the real number &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; as &lt;script type=&quot;math/tex&quot;&gt;\mathrm{CI}(x)&lt;/script&gt;, where we round halves down. Then repeating the grover iteration &lt;script type=&quot;math/tex&quot;&gt;R = \mathrm{CI}\bigg( \frac{\arccos \sqrt{\frac{M}{N}}}{\theta} \bigg)&lt;/script&gt; times rotates 
+&lt;script type=&quot;math/tex&quot;&gt;|\psi \rangle&lt;/script&gt; 
+within an angle &lt;script type=&quot;math/tex&quot;&gt;\frac{\theta}{2} \leq \frac{\pi}{4}&lt;/script&gt; of 
+&lt;script type=&quot;math/tex&quot;&gt;| \beta \rangle&lt;/script&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;Observation of the state in the computational basis then yields a solution to the search problem with a probability at least &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{2}&lt;/script&gt;. For specific values of M and N it is possible to achieve higher probability of success. For example, if &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+M &lt;&lt; N %]]&gt;&lt;/script&gt;, we have that &lt;script type=&quot;math/tex&quot;&gt;\sin \theta \approx \theta&lt;/script&gt;, and thus the angular error in the final state is at most &lt;script type=&quot;math/tex&quot;&gt;\frac{\theta}{2} \approx \sqrt{\frac{M}{N}}&lt;/script&gt;, giving probability of at most &lt;script type=&quot;math/tex&quot;&gt;\frac{M}{N}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;The form of R is an exact expression for the query complexity of the search algorithm, but we can have a simpler expression that summarizes the essential behaviour of R. Note that &lt;script type=&quot;math/tex&quot;&gt;R \leq \lceil \frac{\pi}{2 \theta} \rceil&lt;/script&gt;, because &lt;script type=&quot;math/tex&quot;&gt;\arccos \sqrt{\frac{M}{N} \leq \frac{\pi}{2}}&lt;/script&gt;, so we can give an upper bound on R. Firstly we assume &lt;script type=&quot;math/tex&quot;&gt;M \leq \frac{N}{2}&lt;/script&gt;, thus &lt;script type=&quot;math/tex&quot;&gt;\frac{\theta}{2} \geq \sin \frac{\theta}{2} = \sqrt{\frac{M}{N}}&lt;/script&gt;. Then we have a upper bound for R:&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+    R \leq \bigg\lceil \frac{\pi}{4} \sqrt{\frac{
+    N}{M}} \ \bigg\rceil
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;Thus, &lt;script type=&quot;math/tex&quot;&gt;R = O\big( \sqrt{\frac{N}{M}} \big)&lt;/script&gt; oracle calls must be performed in order to obtain a solution with high probability. We have a polynomial speed-up over the classical algorithm.&lt;/p&gt;
+
+&lt;p&gt;We only considered the case when &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+M &lt; \frac{N}{2} %]]&gt;&lt;/script&gt;, what happens if this is not the case? In this case the angle &lt;script type=&quot;math/tex&quot;&gt;\theta&lt;/script&gt; gets smaller and we need more interactions as M increases. But since we expect to be easy to find a solution ( because &lt;script type=&quot;math/tex&quot;&gt;M \geq \frac{N}{2}&lt;/script&gt; ) we can randomly pick a solution and check if it is a solution using the oracle. This succeeds with probability at least &lt;script type=&quot;math/tex&quot;&gt;\frac{1}{2}&lt;/script&gt;, and requires only one query of the oracle, but only works if we know the number of solutions in advance.&lt;/p&gt;
+
+&lt;p&gt;If we don’t know that &lt;script type=&quot;math/tex&quot;&gt;M \geq \frac{N}{2}&lt;/script&gt;. We can double the number of elements in the search space by adding N extra items, none which are solutions. This is done by adding a single qubit 
+&lt;script type=&quot;math/tex&quot;&gt;| q \rangle&lt;/script&gt; 
+to the search index, doubling the numbers of items to be searched to &lt;script type=&quot;math/tex&quot;&gt;2N&lt;/script&gt;. A new augmented oracle &lt;script type=&quot;math/tex&quot;&gt;O'&lt;/script&gt; can be constructed in a way that marks an item only if it is a solution to the search problem and the extra bit is set to zero; The new search problem has only M solutions out of &lt;script type=&quot;math/tex&quot;&gt;2N&lt;/script&gt;, so using &lt;script type=&quot;math/tex&quot;&gt;R = \frac{\pi}{4} \sqrt{\frac{2N}{M}}&lt;/script&gt; queries of &lt;script type=&quot;math/tex&quot;&gt;O'&lt;/script&gt; we get a solution of high probability, since we are using the Big-O notation  we are ignoring constants that multiply the scaling and we have the same scaling &lt;script type=&quot;math/tex&quot;&gt;O \big( \sqrt{\frac{N}{M}} \big)&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;3-example-for-n4-qubits&quot;&gt;3) Example for N=4 Qubits&lt;/h1&gt;
+
+&lt;p&gt;Here I will follow the &lt;a href=&quot;https://qiskit.org/textbook/ch-algorithms/grover.html&quot;&gt;Qiskit Book&lt;/a&gt; and we will focus on the implementation for &lt;script type=&quot;math/tex&quot;&gt;N=4&lt;/script&gt;, but the algorithm implementation is not hard to scale up for any &lt;script type=&quot;math/tex&quot;&gt;N&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;The first part of the algorithm is to build an oracle that marks the desired state, let’s consider the marked up state 
+&lt;script type=&quot;math/tex&quot;&gt;\left| 11 \right&gt;&lt;/script&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;Therefore, we need that the oracle acts as follows:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;O \left|s \right&gt; = O \ \frac{1}{2} \ \bigg( \left| 00 \right&gt; + \left| 01 \right&gt; + \left| 10 \right&gt; + \left| 11 \right&gt; \bigg) = \frac{1}{2} \ \bigg( \left| 00 \right&gt; + \left| 01 \right&gt; + \left| 10 \right&gt; - \left| 11 \right&gt; \bigg)&lt;/script&gt;
+
+&lt;p&gt;This is the same as a controled Z gate, that means if your first qubit is 
+&lt;script type=&quot;math/tex&quot;&gt;\left| 1 \right&gt;&lt;/script&gt;
+, then you apply an Z operator on the seccond qubit:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\mathrm{CZ} = \left| 0 \right&gt; \left&lt; 0 \right| \otimes 1 + \left| 1 \right&gt; \left&lt; 1 \right| \otimes Z %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;This can be done by the reflection: 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+D = 2 \left| s \right&gt; \left&lt; s \right| - 1 %]]&gt;&lt;/script&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It can be shown that: &lt;script type=&quot;math/tex&quot;&gt;D = H^{2\otimes}D'H^{2\otimes}&lt;/script&gt;, where:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+D' = \begin{pmatrix}
+    1 &amp;  0  &amp; 0 &amp; 0 \\
+    0 &amp; -1  &amp; 0 &amp; 0 \\
+    0 &amp;  0 &amp; -1 &amp; 0 \\
+    0 &amp;  0 &amp; 0 &amp; -1
+    \end{pmatrix} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Therefore:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;D' \left|s\right&gt; = \frac{1}{2} \ \bigg( \left|00\right&gt; - \left|01\right&gt; - \left|10\right&gt; - \left|11\right&gt; \bigg)&lt;/script&gt;
+
+&lt;p&gt;We know that the state 
+&lt;script type=&quot;math/tex&quot;&gt;\left| 00 \right&gt;&lt;/script&gt; 
+is the only one that changes the sign and we also know that we can change the sign of 
+&lt;script type=&quot;math/tex&quot;&gt;\left| 11 \right&gt;&lt;/script&gt; 
+by an CZ gate. The other signs can be changed using Z gates on each qubit, because 
+&lt;script type=&quot;math/tex&quot;&gt;Z \left| i\right&gt; = (-1)^i \left|i \right&gt;&lt;/script&gt;
+.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;matplotlib&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inline&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;circuit&quot;&gt;Circuit&lt;/h2&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;QuantumRegister&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;C_Reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ClassicalRegister&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;QuantumCircuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;#Grover
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;z&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#Measurement
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;barrier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;measure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C_Reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'mpl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/2020-07-04-Grover_16_0.svg&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;simulation&quot;&gt;Simulation&lt;/h2&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;backend_sim&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Aer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'qasm_simulator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;job_sim&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend_sim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;result_sim&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;job_sim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result_sim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit.visualization&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plot_histogram&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plot_histogram&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/2020-07-04-Grover_19_0.svg&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;running-on-ibmq&quot;&gt;Running on IBMQ&lt;/h2&gt;
+
+&lt;p&gt;We will choose the least busy backend with at least two qubits.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IBMQ&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit.providers.ibmq&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least_busy&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IBMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load_account&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;num_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least_busy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_qubits&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;simulator&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;operational&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;IBMQBackend('ibmq_ourense') from IBMQ(hub='ibm-q', group='open', project='main')&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Submiting the job for the IBM Q platform&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit.tools.monitor&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;job_monitor&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;job_exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Qsk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;job_monitor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;job_exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Job Status: job has successfully run
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;result_exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;job_exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;qiskit.visualization&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plot_histogram&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;counts_exp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result_exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_Circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plot_histogram&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counts_exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;legend&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Device'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'Simulator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/n-blog/assets/2020-07-04-Grover_files/2020-07-04-Grover_25_0.svg&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;references&quot;&gt;References&lt;/h1&gt;
+
+&lt;p&gt;1 -  Michael A. Nielsen and Isaac L. Chuang.Quantum Computation and Quantum Information:  10th Anniversary Edition.Cambridge University Press, 2010&lt;/p&gt;
+
+&lt;p&gt;2 -   Giuliano Benenti, Giulio Casati, and Giuliano Strini.Principles  of  Quantum  Computation  and  Information.  World Scientific, 2004.&lt;/p&gt;
+
+&lt;p&gt;3 - &lt;a href=&quot;https://qiskit.org/textbook/&quot;&gt;Qiskit Book&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h3&gt;Version Information&lt;/h3&gt;
+&lt;table&gt;&lt;tr&gt;&lt;th&gt;Qiskit Software&lt;/th&gt;&lt;th&gt;Version&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Qiskit&lt;/td&gt;&lt;td&gt;0.19.1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Terra&lt;/td&gt;&lt;td&gt;0.14.1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aer&lt;/td&gt;&lt;td&gt;0.5.1&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Ignis&lt;/td&gt;&lt;td&gt;0.3.0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Aqua&lt;/td&gt;&lt;td&gt;0.7.0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;IBM Q Provider&lt;/td&gt;&lt;td&gt;0.7.0&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;th&gt;System information&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Python&lt;/td&gt;&lt;td&gt;3.7.3 | packaged by conda-forge | (default, Jul  1 2019, 21:52:21) 
+[GCC 7.3.0]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;OS&lt;/td&gt;&lt;td&gt;Linux&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;CPUs&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Memory (Gb)&lt;/td&gt;&lt;td&gt;7.664028167724609&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;2&quot;&gt;Sat Jul 04 17:45:24 2020 -03&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+</description>
+        <pubDate>Sat, 04 Jul 2020 15:00:00 -0300</pubDate>
+        <link>http://localhost:4000/n-blog/2020/07/04/Grover.html</link>
+        <guid isPermaLink="true">http://localhost:4000/n-blog/2020/07/04/Grover.html</guid>
+        
+        <category>Quantum-Computing</category>
+        
+        <category>Qiskit</category>
+        
+        <category>Tutorial</category>
+        
+        <category>Quantum-Algorithm</category>
+        
+        
+      </item>
     
       <item>
         <title>Elementary Cellular Automaton</title>
