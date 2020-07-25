@@ -6,9 +6,246 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 04 Jul 2020 18:32:21 -0300</pubDate>
-    <lastBuildDate>Sat, 04 Jul 2020 18:32:21 -0300</lastBuildDate>
+    <pubDate>Sat, 25 Jul 2020 18:49:32 -0300</pubDate>
+    <lastBuildDate>Sat, 25 Jul 2020 18:49:32 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
+    
+      <item>
+        <title>Monte Carlo Integration</title>
+        <description>&lt;h1 id=&quot;monte-carlo-integration&quot;&gt;Monte Carlo Integration&lt;/h1&gt;
+
+&lt;h2 id=&quot;1-introduction&quot;&gt;1) Introduction&lt;/h2&gt;
+&lt;p&gt;In this blog post I will explain how to integrate an arbitrary function using Monte Carlo Integration basically we are shooting darts into a dartboard and accepting them according to a given criteria, we can represent this by the following gif:&lt;/p&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration.gif&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You can run this on colab: &lt;a href=&quot;https://colab.research.google.com/github/nahumsa/Self-Avoiding-Walks/blob/master/Monte%20Carlo%20Integration.ipynb&quot; target=&quot;_parent&quot;&gt;&lt;img src=&quot;https://colab.research.google.com/assets/colab-badge.svg&quot; alt=&quot;Open In Colab&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2-algorithm&quot;&gt;2) Algorithm&lt;/h2&gt;
+
+&lt;p&gt;In Monte Carlo Integration we sample from an interval &lt;script type=&quot;math/tex&quot;&gt;\{a,b\}&lt;/script&gt; and see if it is inside the region between the function and the x axis, if this condition is satisfied we accept the sample, otherwise we discart the sample.&lt;/p&gt;
+
+&lt;p&gt;So basically we are shooting darts randomly and accepting them if they are inside the area bellow the function that you wish to integrate and the x axis, the mean count of on target darts are multiplied by the area that covers a paralelogram made by the max of your function inside this interval and the size of the interval. The following is the mathematical way that we&lt;/p&gt;
+
+&lt;p&gt;Consider that you want to estimate the following integral:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\int_a^b f(x) dx&lt;/script&gt;
+
+&lt;p&gt;The procedure can be summarized as follows:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1) Draw a uniform sample from the interval &lt;script type=&quot;math/tex&quot;&gt;x \sim \{a,b\}&lt;/script&gt; and a uniform sample from &lt;script type=&quot;math/tex&quot;&gt;y \sim \{0, \max (f(\{a,b\})\}&lt;/script&gt;, where &lt;script type=&quot;math/tex&quot;&gt;\max (f(\{a,b\})&lt;/script&gt; is the maximum value of the function inside the interval &lt;script type=&quot;math/tex&quot;&gt;\{a, b\}&lt;/script&gt; ;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;2) Evaluate &lt;script type=&quot;math/tex&quot;&gt;f(x)&lt;/script&gt; and if &lt;script type=&quot;math/tex&quot;&gt;f(x) &gt; y&lt;/script&gt; discard the sample, otherwise accept the sample.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;On average you will have the number of samples that satisfies your constraints, then you take the average and multiply for the area of your given interval:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;A = (\max (f(\{a,b\})\} - 0)*(b-a)&lt;/script&gt;
+
+&lt;p&gt;Thus:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\int_a^b f(x) dx = A* \mathbb{E}(\mathrm{Accepted \ counts})&lt;/script&gt;
+
+&lt;p&gt;Let’s program this algorithm in python!&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def mc_integration(x_init, x_final, func, n=100000):
+  &quot;&quot;&quot; Function to do monte carlo integration for 
+      n samples.
+
+  Parameters
+  -----------------------------------------------
+  x_init(float): Starting point of integration.
+  x_final(float): Ending point of integration.
+  func(function): Python function that you want to integrate.
+  n(int): Number of samples.
+
+  &quot;&quot;&quot;
+
+  X = np.linspace(x_init, x_final, 1000)
+  y1 = 0
+  # Overshoot by 1 for convergence
+  y2 = max((func(X))) + 1
+      
+  area = (x_final-x_init)*(y2-y1)
+  check = []
+  xs = []
+  ys = []
+
+  for _ in range(n):
+      
+      # Generate Samples
+      x = np.random.uniform(x_init,x_final,1)
+      xs.append(float(x))
+      
+      y = np.random.uniform(y1,y2,1)
+      ys.append(float(y))
+      
+      # Reject
+      if abs(y) &amp;gt; abs(func(x)) or y&amp;lt;0:
+          check.append(0)
+      
+      # Accept
+      else:
+          check.append(1)
+
+  return np.mean(check)*area, xs, ys, check
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;application-1-fx--sin-x&quot;&gt;Application 1: &lt;script type=&quot;math/tex&quot;&gt;f(x) = \sin x&lt;/script&gt;&lt;/h2&gt;
+&lt;p&gt;Let’s try with a simple function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x) = \sin x&lt;/script&gt;
+
+&lt;p&gt;And compare with the integration used on scipy.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def f(x):
+  return np.sin(x)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from scipy.integrate import quad
+
+a = 0.3
+b = 2.5
+
+sol, xs, ys, check = mc_integration(a, b, f, n=1000000)
+id_sol, _ = quad(f, a, b)
+
+print(f'Monte Carlo Solution: {sol}')
+print(f'Quad Solution: {id_sol}')
+print(f'Error: {np.square(sol - id_sol)}')
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Monte Carlo Solution: 1.7552919930712214
+Quad Solution: 1.7564801046725398
+Error: 1.4116091771873149e-06
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s see what is happening when we are doing this procedure, the red dots are rejected and blue dots are accepted and we have the plot of our function in blue.&lt;/p&gt;
+
+&lt;p&gt;We see that we sampled a lot of points in this interval such that we almost filled the area.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;check = np.array(check)
+xs = np.array(xs)
+ys = np.array(ys)
+plt.plot(xs[check == 0], ys[check == 0], 'ro', label='Rejected')
+plt.plot(xs[check == 1], ys[check == 1], 'go', label='Accepted')
+x = np.linspace(a,b, 100000)
+
+plt.plot(x, f(x), label='Function', linewidth=6)
+plt.legend()
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_8_0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s see how the convergence of our method is affected by the sample size.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;err = []
+
+n = np.linspace(10, 10000, 100)
+
+for i in tqdm(n):  
+  sol, *_ = mc_integration(a, b, f, n=int(i))
+  err.append(np.square(sol - id_sol))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;plt.plot(n, err)
+plt.title(&quot;Convergence&quot;, size=20)
+plt.xlabel(&quot;Number of Samples&quot;, size=16)
+plt.ylabel(&quot;Error&quot;, size=16)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_11_0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;application-2-fx--fracsin-xx2&quot;&gt;Application 2: &lt;script type=&quot;math/tex&quot;&gt;f(x) = \frac{\sin x}{x^2}&lt;/script&gt;&lt;/h2&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def f(x):
+  return np.sin(x)/(x**2)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from scipy.integrate import quad
+
+a = 0.3
+b = 5
+
+sol, xs, ys, check = mc_integration(a, b, f, n=1000000)
+id_sol, _ = quad(f, a, b)
+
+print(f'Monte Carlo Solution: {sol}')
+print(f'Quad Solution: {id_sol}')
+print(f'Error: {np.square(sol - id_sol)}')
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Monte Carlo Solution: 1.773632401526077
+Quad Solution: 1.635995393784945
+Error: 0.01894394589993242
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s see what is happening when we are doing this procedure, the red dots are rejected and blue dots are accepted and we have the plot of our function in blue.&lt;/p&gt;
+
+&lt;p&gt;We see that we sampled a lot of points in this interval such that we almost filled the area.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;check = np.array(check)
+xs = np.array(xs)
+ys = np.array(ys)
+plt.plot(xs[check == 0], ys[check == 0], 'ro', label='Rejected')
+plt.plot(xs[check == 1], ys[check == 1], 'go', label='Accepted')
+x = np.linspace(a, b, 100000)
+
+plt.plot(x, f(x), label='Function', linewidth=6)
+plt.legend()
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_16_0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As before, let’s see the convergence of our method:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;err = []
+
+n = np.linspace(10, 10000, 100)
+
+for i in tqdm(n):  
+  sol, *_ = mc_integration(a, b, f, n=int(i))
+  err.append(np.square(sol - id_sol))
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;100%|██████████| 100/100 [00:06&amp;lt;00:00, 15.33it/s]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;plt.plot(n, err)
+plt.title(&quot;Convergence&quot;, size=20)
+plt.xlabel(&quot;Number of Samples&quot;, size=16)
+plt.ylabel(&quot;Error&quot;, size=16)
+plt.show()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p style=&quot;text-align:center;&quot;&gt;&lt;img src=&quot;/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_19_0.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;By learning the method of Monte Carlo Integration you have learned a powerful tool that can be generalized for other algorithms such as Sequential Monte Carlo(SMC) and Markov Chain Monte Carlo(MCMC), which (hopefully) I will cover in future blog posts.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 25 Jul 2020 14:00:00 -0300</pubDate>
+        <link>http://localhost:4000/n-blog/2020/07/25/MC-Integration.html</link>
+        <guid isPermaLink="true">http://localhost:4000/n-blog/2020/07/25/MC-Integration.html</guid>
+        
+        <category>Programming</category>
+        
+        <category>Monte-Carlo</category>
+        
+        
+      </item>
     
       <item>
         <title>Grover Algorithm</title>
@@ -241,7 +478,7 @@ M &lt; \frac{N}{2} %]]&gt;&lt;/script&gt;, what happens if this is not the case?
 &lt;script type=&quot;math/tex&quot;&gt;| q \rangle&lt;/script&gt; 
 to the search index, doubling the numbers of items to be searched to &lt;script type=&quot;math/tex&quot;&gt;2N&lt;/script&gt;. A new augmented oracle &lt;script type=&quot;math/tex&quot;&gt;O'&lt;/script&gt; can be constructed in a way that marks an item only if it is a solution to the search problem and the extra bit is set to zero; The new search problem has only M solutions out of &lt;script type=&quot;math/tex&quot;&gt;2N&lt;/script&gt;, so using &lt;script type=&quot;math/tex&quot;&gt;R = \frac{\pi}{4} \sqrt{\frac{2N}{M}}&lt;/script&gt; queries of &lt;script type=&quot;math/tex&quot;&gt;O'&lt;/script&gt; we get a solution of high probability, since we are using the Big-O notation  we are ignoring constants that multiply the scaling and we have the same scaling &lt;script type=&quot;math/tex&quot;&gt;O \big( \sqrt{\frac{N}{M}} \big)&lt;/script&gt;.&lt;/p&gt;
 
-&lt;h1 id=&quot;3-example-for-n4-qubits&quot;&gt;3) Example for N=4 Qubits&lt;/h1&gt;
+&lt;h1 id=&quot;3-example-for-n4&quot;&gt;3) Example for N=4&lt;/h1&gt;
 
 &lt;p&gt;Here I will follow the &lt;a href=&quot;https://qiskit.org/textbook/ch-algorithms/grover.html&quot;&gt;Qiskit Book&lt;/a&gt; and we will focus on the implementation for &lt;script type=&quot;math/tex&quot;&gt;N=4&lt;/script&gt;, but the algorithm implementation is not hard to scale up for any &lt;script type=&quot;math/tex&quot;&gt;N&lt;/script&gt;.&lt;/p&gt;
 

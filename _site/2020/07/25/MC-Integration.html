@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  
+    
+
+
+
+
+
+  
+
+  <meta charset="utf-8">  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/n-blog/assets/images/favicon.ico" type="image/png" />    
+  <title>Monte Carlo Integration</title>
+  
+  <meta name="description" content="Monte Carlo Integration">
+  <link rel="stylesheet" href="/n-blog/css/main.css">
+  <link rel="canonical" href="http://localhost:4000/n-blog/2020/07/25/MC-Integration.html">
+  <link rel="alternate" type="application/rss+xml" title="N-Blog" href="http://localhost:4000/n-blog/feed.xml">
+
+  <!-- For Latex -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+  
+  <!-- Google Analytics -->
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-170504520-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+    
+    <a class="site-title" href="/n-blog/">N-Blog</a>
+
+    
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <nav class="site-nav">
+        <a class="page-link" href="/n-blog/about/">&#x1f4ee; About</a>
+      </nav>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Monte Carlo Integration</h1>
+    <p class="post-meta"><time datetime="2020-07-25T14:00:00-03:00" itemprop="datePublished">Jul 25, 2020</time></p>
+    <span>[
+      
+        
+        <a href="/n-blog/tag/Programming"><code class="highligher-rouge"><nobr>Programming</nobr></code>&nbsp;</a>
+      
+        
+        <a href="/n-blog/tag/Monte-Carlo"><code class="highligher-rouge"><nobr>Monte-Carlo</nobr></code>&nbsp;</a>
+      
+    ]</span>
+    
+  </header>
+  
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="monte-carlo-integration">Monte Carlo Integration</h1>
+
+<h2 id="1-introduction">1) Introduction</h2>
+<p>In this blog post I will explain how to integrate an arbitrary function using Monte Carlo Integration basically we are shooting darts into a dartboard and accepting them according to a given criteria, we can represent this by the following gif:</p>
+
+<p style="text-align:center;"><img src="/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration.gif" /></p>
+
+<p>You can run this on colab: <a href="https://colab.research.google.com/github/nahumsa/Self-Avoiding-Walks/blob/master/Monte%20Carlo%20Integration.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a></p>
+
+<h2 id="2-algorithm">2) Algorithm</h2>
+
+<p>In Monte Carlo Integration we sample from an interval <script type="math/tex">\{a,b\}</script> and see if it is inside the region between the function and the x axis, if this condition is satisfied we accept the sample, otherwise we discart the sample.</p>
+
+<p>So basically we are shooting darts randomly and accepting them if they are inside the area bellow the function that you wish to integrate and the x axis, the mean count of on target darts are multiplied by the area that covers a paralelogram made by the max of your function inside this interval and the size of the interval. The following is the mathematical way that we</p>
+
+<p>Consider that you want to estimate the following integral:</p>
+
+<script type="math/tex; mode=display">\int_a^b f(x) dx</script>
+
+<p>The procedure can be summarized as follows:</p>
+
+<ul>
+  <li>
+    <p>1) Draw a uniform sample from the interval <script type="math/tex">x \sim \{a,b\}</script> and a uniform sample from <script type="math/tex">y \sim \{0, \max (f(\{a,b\})\}</script>, where <script type="math/tex">\max (f(\{a,b\})</script> is the maximum value of the function inside the interval <script type="math/tex">\{a, b\}</script> ;</p>
+  </li>
+  <li>
+    <p>2) Evaluate <script type="math/tex">f(x)</script> and if <script type="math/tex">f(x) > y</script> discard the sample, otherwise accept the sample.</p>
+  </li>
+</ul>
+
+<p>On average you will have the number of samples that satisfies your constraints, then you take the average and multiply for the area of your given interval:</p>
+
+<script type="math/tex; mode=display">A = (\max (f(\{a,b\})\} - 0)*(b-a)</script>
+
+<p>Thus:</p>
+
+<script type="math/tex; mode=display">\int_a^b f(x) dx = A* \mathbb{E}(\mathrm{Accepted \ counts})</script>
+
+<p>Let’s program this algorithm in python!</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def mc_integration(x_init, x_final, func, n=100000):
+  """ Function to do monte carlo integration for 
+      n samples.
+
+  Parameters
+  -----------------------------------------------
+  x_init(float): Starting point of integration.
+  x_final(float): Ending point of integration.
+  func(function): Python function that you want to integrate.
+  n(int): Number of samples.
+
+  """
+
+  X = np.linspace(x_init, x_final, 1000)
+  y1 = 0
+  # Overshoot by 1 for convergence
+  y2 = max((func(X))) + 1
+      
+  area = (x_final-x_init)*(y2-y1)
+  check = []
+  xs = []
+  ys = []
+
+  for _ in range(n):
+      
+      # Generate Samples
+      x = np.random.uniform(x_init,x_final,1)
+      xs.append(float(x))
+      
+      y = np.random.uniform(y1,y2,1)
+      ys.append(float(y))
+      
+      # Reject
+      if abs(y) &gt; abs(func(x)) or y&lt;0:
+          check.append(0)
+      
+      # Accept
+      else:
+          check.append(1)
+
+  return np.mean(check)*area, xs, ys, check
+</code></pre></div></div>
+
+<h2 id="application-1-fx--sin-x">Application 1: <script type="math/tex">f(x) = \sin x</script></h2>
+<p>Let’s try with a simple function:</p>
+
+<script type="math/tex; mode=display">f(x) = \sin x</script>
+
+<p>And compare with the integration used on scipy.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def f(x):
+  return np.sin(x)
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from scipy.integrate import quad
+
+a = 0.3
+b = 2.5
+
+sol, xs, ys, check = mc_integration(a, b, f, n=1000000)
+id_sol, _ = quad(f, a, b)
+
+print(f'Monte Carlo Solution: {sol}')
+print(f'Quad Solution: {id_sol}')
+print(f'Error: {np.square(sol - id_sol)}')
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Monte Carlo Solution: 1.7552919930712214
+Quad Solution: 1.7564801046725398
+Error: 1.4116091771873149e-06
+</code></pre></div></div>
+
+<p>Let’s see what is happening when we are doing this procedure, the red dots are rejected and blue dots are accepted and we have the plot of our function in blue.</p>
+
+<p>We see that we sampled a lot of points in this interval such that we almost filled the area.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>check = np.array(check)
+xs = np.array(xs)
+ys = np.array(ys)
+plt.plot(xs[check == 0], ys[check == 0], 'ro', label='Rejected')
+plt.plot(xs[check == 1], ys[check == 1], 'go', label='Accepted')
+x = np.linspace(a,b, 100000)
+
+plt.plot(x, f(x), label='Function', linewidth=6)
+plt.legend()
+plt.show()
+</code></pre></div></div>
+
+<p style="text-align:center;"><img src="/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_8_0.png" /></p>
+
+<p>Let’s see how the convergence of our method is affected by the sample size.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>err = []
+
+n = np.linspace(10, 10000, 100)
+
+for i in tqdm(n):  
+  sol, *_ = mc_integration(a, b, f, n=int(i))
+  err.append(np.square(sol - id_sol))
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt.plot(n, err)
+plt.title("Convergence", size=20)
+plt.xlabel("Number of Samples", size=16)
+plt.ylabel("Error", size=16)
+plt.show()
+</code></pre></div></div>
+
+<p style="text-align:center;"><img src="/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_11_0.png" /></p>
+
+<h2 id="application-2-fx--fracsin-xx2">Application 2: <script type="math/tex">f(x) = \frac{\sin x}{x^2}</script></h2>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def f(x):
+  return np.sin(x)/(x**2)
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from scipy.integrate import quad
+
+a = 0.3
+b = 5
+
+sol, xs, ys, check = mc_integration(a, b, f, n=1000000)
+id_sol, _ = quad(f, a, b)
+
+print(f'Monte Carlo Solution: {sol}')
+print(f'Quad Solution: {id_sol}')
+print(f'Error: {np.square(sol - id_sol)}')
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Monte Carlo Solution: 1.773632401526077
+Quad Solution: 1.635995393784945
+Error: 0.01894394589993242
+</code></pre></div></div>
+
+<p>Let’s see what is happening when we are doing this procedure, the red dots are rejected and blue dots are accepted and we have the plot of our function in blue.</p>
+
+<p>We see that we sampled a lot of points in this interval such that we almost filled the area.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>check = np.array(check)
+xs = np.array(xs)
+ys = np.array(ys)
+plt.plot(xs[check == 0], ys[check == 0], 'ro', label='Rejected')
+plt.plot(xs[check == 1], ys[check == 1], 'go', label='Accepted')
+x = np.linspace(a, b, 100000)
+
+plt.plot(x, f(x), label='Function', linewidth=6)
+plt.legend()
+plt.show()
+</code></pre></div></div>
+
+<p style="text-align:center;"><img src="/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_16_0.png" /></p>
+
+<p>As before, let’s see the convergence of our method:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>err = []
+
+n = np.linspace(10, 10000, 100)
+
+for i in tqdm(n):  
+  sol, *_ = mc_integration(a, b, f, n=int(i))
+  err.append(np.square(sol - id_sol))
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>100%|██████████| 100/100 [00:06&lt;00:00, 15.33it/s]
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>plt.plot(n, err)
+plt.title("Convergence", size=20)
+plt.xlabel("Number of Samples", size=16)
+plt.ylabel("Error", size=16)
+plt.show()
+</code></pre></div></div>
+
+<p style="text-align:center;"><img src="/n-blog/assets/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_19_0.png" /></p>
+
+<h1 id="conclusion">Conclusion</h1>
+
+<p>By learning the method of Monte Carlo Integration you have learned a powerful tool that can be generalized for other algorithms such as Sequential Monte Carlo(SMC) and Markov Chain Monte Carlo(MCMC), which (hopefully) I will cover in future blog posts.</p>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>    
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">N-Blog</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>N-Blog</li>
+          <li><a href="mailto:nahumsa@cbpf.br">nahumsa@cbpf.br</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/nahumsa"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">nahumsa</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/sa_nahum"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">sa_nahum</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Here I will share thoughts and ideas about Machine Learning  and Quantum Computing.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -321,7 +321,7 @@ M < \frac{N}{2} %]]></script>, what happens if this is not the case? In this cas
 <script type="math/tex">| q \rangle</script> 
 to the search index, doubling the numbers of items to be searched to <script type="math/tex">2N</script>. A new augmented oracle <script type="math/tex">O'</script> can be constructed in a way that marks an item only if it is a solution to the search problem and the extra bit is set to zero; The new search problem has only M solutions out of <script type="math/tex">2N</script>, so using <script type="math/tex">R = \frac{\pi}{4} \sqrt{\frac{2N}{M}}</script> queries of <script type="math/tex">O'</script> we get a solution of high probability, since we are using the Big-O notation  we are ignoring constants that multiply the scaling and we have the same scaling <script type="math/tex">O \big( \sqrt{\frac{N}{M}} \big)</script>.</p>
 
-<h1 id="3-example-for-n4-qubits">3) Example for N=4 Qubits</h1>
+<h1 id="3-example-for-n4">3) Example for N=4</h1>
 
 <p>Here I will follow the <a href="https://qiskit.org/textbook/ch-algorithms/grover.html">Qiskit Book</a> and we will focus on the implementation for <script type="math/tex">N=4</script>, but the algorithm implementation is not hard to scale up for any <script type="math/tex">N</script>.</p>
 
