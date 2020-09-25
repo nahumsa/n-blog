@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 25 Sep 2020 14:57:53 -0300</pubDate>
-    <lastBuildDate>Fri, 25 Sep 2020 14:57:53 -0300</lastBuildDate>
+    <pubDate>Fri, 25 Sep 2020 14:59:18 -0300</pubDate>
+    <lastBuildDate>Fri, 25 Sep 2020 14:59:18 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
     
       <item>
@@ -348,9 +348,9 @@ The slowest run took 57.86 times longer than the fastest. This could mean that a
   &lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Tue, 08 Sep 2020 17:00:00 -0300</pubDate>
-        <link>http://localhost:4000/n-blog/2020/09/08/NN-JAX.html</link>
-        <guid isPermaLink="true">http://localhost:4000/n-blog/2020/09/08/NN-JAX.html</guid>
+        <pubDate>Fri, 25 Sep 2020 11:00:00 -0300</pubDate>
+        <link>http://localhost:4000/n-blog/2020/09/25/NN-JAX.html</link>
+        <guid isPermaLink="true">http://localhost:4000/n-blog/2020/09/25/NN-JAX.html</guid>
         
         <category>Neural-Networks</category>
         
