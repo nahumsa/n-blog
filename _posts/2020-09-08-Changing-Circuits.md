@@ -2,7 +2,7 @@
 layout: post
 title: "Changing gates on a predifined circuit (Qiskit)"
 date: 2020-09-08 20:00:00
-tags: Qiskit Tutorial
+tag: Qiskit Tutorial
 ---
 # Changing gates on a predefined circuit in Qiskit
 

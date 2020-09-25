@@ -6,8 +6,8 @@
 </description>
     <link>http://localhost:4000/n-blog/</link>
     <atom:link href="http://localhost:4000/n-blog/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 25 Sep 2020 15:24:38 -0300</pubDate>
-    <lastBuildDate>Fri, 25 Sep 2020 15:24:38 -0300</lastBuildDate>
+    <pubDate>Fri, 25 Sep 2020 15:30:46 -0300</pubDate>
+    <lastBuildDate>Fri, 25 Sep 2020 15:30:46 -0300</lastBuildDate>
     <generator>Jekyll v3.8.7</generator>
     
       <item>
@@ -434,9 +434,7 @@ Gates in the new circuit: ['x', 'cx', 'x']
         <link>http://localhost:4000/n-blog/2020/09/08/Changing-Circuits.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/09/08/Changing-Circuits.html</guid>
         
-        <category>Qiskit</category>
-        
-        <category>Tutorial</category>
+        <category>Qiskit Tutorial</category>
         
         
       </item>
@@ -671,9 +669,7 @@ plt.show()
         <link>http://localhost:4000/n-blog/2020/07/25/MC-Integration.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/07/25/MC-Integration.html</guid>
         
-        <category>Programming</category>
-        
-        <category>Monte-Carlo</category>
+        <category>Programming Monte-Carlo</category>
         
         
       </item>
@@ -1060,13 +1056,7 @@ by an CZ gate. The other signs can be changed using Z gates on each qubit, becau
         <link>http://localhost:4000/n-blog/2020/07/04/Grover.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/07/04/Grover.html</guid>
         
-        <category>Quantum-Computing</category>
-        
-        <category>Qiskit</category>
-        
-        <category>Tutorial</category>
-        
-        <category>Quantum-Algorithm</category>
+        <category>Quantum-Computing Qiskit Tutorial Quantum-Algorithm</category>
         
         
       </item>
@@ -1228,9 +1218,7 @@ by an CZ gate. The other signs can be changed using Z gates on each qubit, becau
         <link>http://localhost:4000/n-blog/2020/06/26/Cellular-Automaton.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/06/26/Cellular-Automaton.html</guid>
         
-        <category>Programming</category>
-        
-        <category>Cellular-Automaton</category>
+        <category>Programming Cellular-Automaton</category>
         
         
       </item>
@@ -1536,9 +1524,7 @@ Base measured Z
         <link>http://localhost:4000/n-blog/2020/06/22/Tomography.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/06/22/Tomography.html</guid>
         
-        <category>Quantum-Computing</category>
-        
-        <category>Qiskit</category>
+        <category>Quantum-Computing Qiskit</category>
         
         
       </item>
@@ -1754,13 +1740,7 @@ H = \frac{1}{\sqrt2}
         <link>http://localhost:4000/n-blog/2020/06/18/Deutsch.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/06/18/Deutsch.html</guid>
         
-        <category>Quantum-Computing</category>
-        
-        <category>Qiskit</category>
-        
-        <category>Tutorial</category>
-        
-        <category>Quantum-Algorithm</category>
+        <category>Quantum-Computing Qiskit Tutorial Quantum-Algorithm</category>
         
         
       </item>
@@ -2128,11 +2108,7 @@ ibmq_rome
         <link>http://localhost:4000/n-blog/2020/06/09/Introduction-Qiskit.html</link>
         <guid isPermaLink="true">http://localhost:4000/n-blog/2020/06/09/Introduction-Qiskit.html</guid>
         
-        <category>Quantum-Computing</category>
-        
-        <category>Qiskit</category>
-        
-        <category>Tutorial</category>
+        <category>Quantum-Computing Qiskit Tutorial</category>
         
         
       </item>

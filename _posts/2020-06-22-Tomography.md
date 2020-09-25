@@ -2,7 +2,7 @@
 layout: post
 title: "Quantum State Tomography"
 date: 2020-06-22 08:00:00
-tags: Quantum-Computing Qiskit
+tag: Quantum-Computing Qiskit
 ---
 
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Monte Carlo Integration"
 date: 2020-07-25 17:00:00
-tags: Programming Monte-Carlo
+tag: Programming Monte-Carlo
 ---
 
 # Monte Carlo Integration

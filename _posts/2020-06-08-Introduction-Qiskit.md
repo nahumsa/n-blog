@@ -2,7 +2,7 @@
 layout: post
 title: "Introduction to IBM Qiskit"
 date: 2020-06-09 19:00:00
-tags: Quantum-Computing Qiskit Tutorial
+tag: Quantum-Computing Qiskit Tutorial
 ---
 
 # First steps into Quantum Computing

@@ -2,7 +2,7 @@
 layout: post
 title: "Elementary Cellular Automaton"
 date: 2020-06-26 11:00:00
-tags: Programming Cellular-Automaton
+tag: Programming Cellular-Automaton
 ---
 
 # 1) Introduction
