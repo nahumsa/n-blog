@@ -2,6 +2,7 @@
 title = "Introduction to IBM Qiskit"
 date = 2020-06-09T19:00:00Z
 author = "Nahum Sá"
+katex = true
 +++
 
 # First steps into Quantum Computing
@@ -22,13 +23,7 @@ In this post I will introduce some important functions to use IBM qiskit, this w
 
 # 2) Building a entangled stated from scratch
 
-We want to build a Bell State from a state 
-
-$$ 
-\left| 00 \right> 
-$$
-
-the final state is:
+We want to build a Bell State from a state $\left| 00 \right>$ and the final state is:
 
 $$
     \left| \psi \right> = \frac{\left| 00 \right> - \left| 11 \right>}{\sqrt 2}
@@ -38,12 +33,12 @@ There are many gates, for reference see the [qiskit book](https://qiskit.org/tex
 
 - Pauli X: This is an one qubit gate that is represented on the computational basis by:
 
-$$
-X = \frac{1}{\sqrt2}
- \begin{pmatrix} 
-    0 & 1\\
-    1 & 0 \\
- \end{pmatrix}
+$$ 
+    X = \frac{1}{\sqrt2}
+    \begin{pmatrix} 
+        0 & 1 \\\\
+        1 & 0 \\\\
+    \end{pmatrix} 
 $$
 
 
@@ -52,26 +47,20 @@ $$
 $$
     H = \frac{1}{\sqrt2}
     \begin{pmatrix} 
-    1 & 1\\
-    1 & -1 \\
+    1 & 1 \\\\
+    1 & -1 \\\\
     \end{pmatrix}
 $$
 
-- $$C_x$$(Controlled X): This is a two qubit gate that changes the second qubit if the first qubit is on the state 
-
-$$
-\left| 1 \right>
-$$ 
-
-On the computational basis is represented by:
+- $C_x$(Controlled X): This is a two qubit gate that changes the second qubit if the first qubit is on the state $\left| 1 \right>$. On the computational basis is represented by:
 
 $$
     C_x  = 
     \begin{pmatrix} 
-    1 & 0 & 0 & 0 \\
-    0 & 1 & 0 & 0 \\
-    0 & 0 & 0 & 1 \\
-    0 & 0 & 1 & 0 \\
+    1 & 0 & 0 & 0 \\\\
+    0 & 1 & 0 & 0 \\\\
+    0 & 0 & 0 & 1 \\\\
+    0 & 0 & 1 & 0 \\\\
     \end{pmatrix}
 $$
 
@@ -100,28 +89,10 @@ The main gates are methods inside you `QuantumCircuit`, thus if you want to add 
 
 Since this is the first example, I shall use linear algebra to show what is happening when you use those gates to construct our entangled state.
 
-All circuits on qiskit starts on the state 
+All circuits on qiskit starts on the state $\left| 0 \right> = \begin{pmatrix} 1 \\\\ 0 \end{pmatrix}$ our first opperation is to transform the $\left| 0 \right>$ state into $\left| 1 \right>$ state, this is done by the Pauli X gate:
 
 $$
-\left| 0 \right> = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
-$$
-
-our first opperation is to transform the 
-
-$$
-\left| 0 \right>
-$$ 
-
-state into 
-
-$$
-\left| 1 \right>
-$$ 
-
-state, this is done by the Pauli X gate:
-
-$$
-X \left| 0 \right> = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} \cdot \begin{pmatrix} 1 \\ 0 \end{pmatrix} = \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \left| 1 \right>
+X \left| 0 \right> = \begin{pmatrix} 0 & 1 \\\\ 1 & 0 \end{pmatrix} \cdot \begin{pmatrix} 1 \\\\ 0 \end{pmatrix} = \begin{pmatrix} 0 \\\\ 1 \end{pmatrix} = \left| 1 \right>
 $$
 
 Thus we apply the X gate on the first register, this is done by assigning the gate to the position `0` of the QuantumRegister.
@@ -134,16 +105,10 @@ circ.draw('mpl')
 
 ![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_7_0.svg)
 
-Now we apply the Haddamard gate on the first register, since the register is already on 
+Now we apply the Haddamard gate on the first register, since the register is already on $\left| 1 \right>$ we have:
 
 $$
-\left| 1 \right>
-$$
-
-we have:
-
-$$
-H \left| 1 \right> = \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \cdot \begin{pmatrix} 0 \\ 1 \end{pmatrix} = \begin{pmatrix} 1 \\ -1 \end{pmatrix} = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - \left| 1 \right> \bigg)
+H \left| 1 \right> = \begin{pmatrix} 1 & 1 \\\\ 1 & -1 \end{pmatrix} \cdot \begin{pmatrix} 0 \\\\ 1 \end{pmatrix} = \begin{pmatrix} 1 \\\\ -1 \end{pmatrix} = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - \left| 1 \right> \bigg)
 $$
 
 
@@ -160,7 +125,7 @@ $$
 C_x \left| a \right>\left| b \right> = \left| a \right>\left| a \oplus b \right>
 $$ 
 
-where $$\oplus$$ means bitwise sum. 
+where $\oplus$ means bitwise sum. 
 
 $$
 C_x \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - \left| 1 \right> \bigg)\left| 0 \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right>\left| 0 \oplus 0 \right> - \left| 1 \right>\left| 1 \oplus 0 \right> \bigg) = \frac{1}{\sqrt{2}} \bigg( \left| 00 \right> - \left| 11 \right> \bigg)

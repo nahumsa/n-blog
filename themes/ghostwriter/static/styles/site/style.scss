@@ -109,6 +109,13 @@ code {
     background-color: #f1f0ea;
 }
 
+code.has-jax {
+    -webkit-font-smoothing: antialiased;
+    background: inherit !important;
+    border: none !important;
+    font-size: 100%;
+}
+
 hr {
     border: none;
     border-bottom: 1px dotted #303030;
