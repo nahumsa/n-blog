@@ -2,6 +2,9 @@ baseurl = "/"
 title = "n-blog"
 theme = "ghostwriter"
 
+pygmentsUseClasses = true
+pygmentsCodefences = true
+
 [markup.highlight]
     codeFences = true
     guessSyntax = true
