@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - gh-pages  # Set a branch to deploy
+      - Hugo-Refactor
 
 jobs:
   deploy:
