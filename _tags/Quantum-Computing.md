@@ -1,3 +1,0 @@
----
-tag-name: Quantum-Computing
----

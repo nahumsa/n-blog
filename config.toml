@@ -1,0 +1,28 @@
+baseurl = "/"
+title = "n-blog"
+theme = "ghostwriter"
+googleAnalytics = "UA-170504520-1"
+
+pygmentsUseClasses = true
+pygmentsCodefences = true
+
+[markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    hl_Lines = ""
+    tabWidth = 4
+
+[Params]
+    mainSections = ["post"]
+    intro = true
+    headline = "n-blog"
+    github = "https://github.com/nahumsa"
+    twitter = "https://twitter.com/sa_nahum"
+    email = "nahumsa@cbpf.br"
+    opengraph = true
+    shareTwitter = true
+    dateFormat = "Mon, Jan 2, 2006"
+
+
+[Permalinks]
+    post = "/:filename/"
