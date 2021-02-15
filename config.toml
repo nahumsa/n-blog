@@ -1,6 +1,7 @@
 baseurl = "/"
 title = "n-blog"
 theme = "ghostwriter"
+googleAnalytics = "UA-170504520-1"
 
 pygmentsUseClasses = true
 pygmentsCodefences = true
