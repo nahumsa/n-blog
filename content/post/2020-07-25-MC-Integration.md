@@ -15,7 +15,7 @@ In this blog post I will explain how to integrate an arbitrary function using Mo
 ## 2) Algorithm
 
 
-In Monte Carlo Integration we sample from an interval $$\{a,b\}$$ and see if it is inside the region between the function and the x axis, if this condition is satisfied we accept the sample, otherwise we discart the sample.
+In Monte Carlo Integration we sample from an interval $\{a,b\}$ and see if it is inside the region between the function and the x axis, if this condition is satisfied we accept the sample, otherwise we discart the sample.
 
 So basically we are shooting darts randomly and accepting them if they are inside the area bellow the function that you wish to integrate and the x axis, the mean count of on target darts are multiplied by the area that covers a paralelogram made by the max of your function inside this interval and the size of the interval. The following is the mathematical way that we
 
@@ -27,14 +27,14 @@ $$
 
 The procedure can be summarized as follows: 
 
-- 1) Draw a uniform sample from the interval $$x \sim \{a,b\}$$ and a uniform sample from $$y \sim \{0, \max (f(\{a,b\})\}$$, where $$\max (f(\{a,b\})$$ is the maximum value of the function inside the interval $$\{a, b\}$$ ;
+- 1) Draw a uniform sample from the interval $x \sim \{a,b\}$ and a uniform sample from $y \sim \\\{ 0, \max (f(\\\{a,b\\\}) \\\}$, where $\max (f(\{a,b\})$ is the maximum value of the function inside the interval $\{a, b\}$ ;
 
-- 2) Evaluate $$f(x)$$ and if $$f(x) > y$$ discard the sample, otherwise accept the sample.
+- 2) Evaluate $f(x)$ and if $f(x) > y$ discard the sample, otherwise accept the sample.
 
 On average you will have the number of samples that satisfies your constraints, then you take the average and multiply for the area of your given interval:
 
 $$
-A = (\max (f(\{a,b\})\} - 0)*(b-a)
+A = (\max f(\\\{a,b\\\}) - 0)*(b-a)
 $$
 
 Thus:
@@ -96,7 +96,7 @@ def mc_integration(x_init, x_final, func, n=100000):
   return np.mean(check)*area, xs, ys, check
 ```
 
-## Application 1: $$f(x) = \sin x$$
+## Application 1: $f(x) = \sin x$
 Let's try with a simple function: 
 
 $$
@@ -174,7 +174,7 @@ plt.show()
 ```
 ![Convergence](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_11_0.png)
 
-## Application 2: $$f(x) = \frac{\sin x}{x^2}$$
+## Application 2: $f(x) = \frac{\sin x}{x^2}$
 
 ``` python
 def f(x):
