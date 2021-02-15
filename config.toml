@@ -1,4 +1,4 @@
-baseurl = "https://nahumsa.github.io/"
+baseurl = "/"
 title = "n-blog"
 theme = "ghostwriter"
 googleAnalytics = "UA-170504520-1"
@@ -25,4 +25,4 @@ pygmentsCodefences = true
 
 
 [Permalinks]
-    post = "/:filename/"
+    post = "/:year/:month/:day/:filename/"
