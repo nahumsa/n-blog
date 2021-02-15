@@ -11,50 +11,35 @@ Let's try to do the tomography of a given one-qubit quantum state just to unders
 
 $$
     \rho = \begin{pmatrix}
-                \rho_{11} & \rho_{12} \\
+                \rho_{11} & \rho_{12} \\\\
                 \rho_{21} & \rho_{22}
            \end{pmatrix} =  \frac{1}{2} \sum_{i=0}^3 S_i \sigma_i
 $$
 
-Where  $$\rho_{11} + \rho_{22} = 1$$, $$\rho_{12} = \rho_{21}^*$$, and $$\sigma_i$$ are the pauli matrices. 
+Where  $\rho_{11} + \rho_{22} = 1$, $\rho_{12} = \rho_{21}^*$, and $\sigma_i$ are the pauli matrices. 
 
 $$
-\sigma_0 = I \ \ \ \sigma_1 = \sigma_x = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix} \ \ \ \sigma_2 = \sigma_y = \begin{pmatrix} 0 & i \\ -i & 0 \end{pmatrix} \ \ \ \sigma_3 = \sigma_z = \begin{pmatrix} 1 & 0 \\ 0 & -1 \end{pmatrix}
+\sigma_0 = I \ \ \ \sigma_1 = \sigma_x = \begin{pmatrix} 0 & 1 \\\\ 1 & 0 \end{pmatrix} \ \ \ \sigma_2 = \sigma_y = \begin{pmatrix} 0 & i \\\\ -i & 0 \end{pmatrix} \ \ \ \sigma_3 = \sigma_z = \begin{pmatrix} 1 & 0 \\\\ 0 & -1 \end{pmatrix}
 $$
 
-Our goal is to find $$S_i$$ an then characterize the state.
+Our goal is to find $S_i$ an then characterize the state.
 
 A problem is that the IBM quantum computers only measures on the Z axis, therefore we only can know $S_3$ that is associated as the expected value of the measurement along the Z axis. 
-We need to do a trick to be able to measure $$\big<X\big>$$ and $$\big<Y\big>$$.
+We need to do a trick to be able to measure $\big< X \big>$ and $\big< Y \big>$.
 
 Let's first check what are the eigenvectors of those operators.
 
-- X has as eigenvectors 
-$$
-\left| + \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> + \left| 1 \right> \bigg)
-$$ 
-and 
-$$
-\left| - \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - \left| 1 \right> \bigg)
-$$ ;
+- X has as eigenvectors $\left| + \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> + \left| 1 \right> \bigg)$ 
+and $\left| - \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - \left| 1 \right> \bigg)$ ;
 
-- Y has as eigenvectors 
-$$
-\left| i^+ \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> + i\left| 1 \right> \bigg)
-$$ 
-and 
-$$
-\left| i^- \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - i\left| 1 \right> \bigg)
-$$ ;
+- Y has as eigenvectors $\left| i^+ \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> + i\left| 1 \right> \bigg)$ 
+and $\left| i^- \right> = \frac{1}{\sqrt{2}} \bigg( \left| 0 \right> - i\left| 1 \right> \bigg)$ ;
 
 
 Thus to measure on those bases we need only to add a way to generate those eigenvectors on the circuit:
 
 - To generate X, we only need to apply the gate $H$. 
-- To generate Y, we need to apply the gate 
-$$
-S^{\dagger}H
-$$.
+- To generate Y, we need to apply the gate $S^{\dagger}H$.
 
 
 # 2) Doing Quantum State Tomography by hand on qiskit
@@ -65,11 +50,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 ```
 
-In order to test this, consider we have the state 
-$$
-\left| \psi \right> = \frac{1}{\sqrt{2}} \big( \left| 0 \right> + \left| 1 \right> \big)
-$$ 
-and we want to do the tomography of this state.
+In order to test this, consider we have the state $\left| \psi \right> = \frac{1}{\sqrt{2}} \big( \left| 0 \right> + \left| 1 \right> \big)$ and we want to do the tomography of this state.
 
 
 ```python
@@ -181,7 +162,7 @@ print(density)
 Writing the density matrix:
 $$
     \rho = \frac{1}{2} \begin{pmatrix} 
-            1 & 1 \\
+            1 & 1 \\\\
             1 & 1
            \end{pmatrix}
 $$
@@ -314,13 +295,7 @@ def plot_density_matrix(DM):
     plt.show()
 ```
 
-Ploting the density matrix, we see that there are states only on the first and last column (row), each column (row) represents a quantum state on the computational basis, for this case the states represented are
-$$
-\left| 000 \right>
-$$ and 
-$$
-\left| 111 \right>
-$$ respectively. We can ignore the imaginary part, since is is only random noise.
+Ploting the density matrix, we see that there are states only on the first and last column (row), each column (row) represents a quantum state on the computational basis, for this case the states represented are $\left| 000 \right>$ and $\left| 111 \right>$ respectively. We can ignore the imaginary part, since is is only random noise.
 
 ```python
 plot_density_matrix(density_matrix)
