@@ -26,7 +26,7 @@ qc.draw('mpl')
 ```
 
 
-![Original Circuit](/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_2_0.svg)
+![Original Circuit](/n-blog/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_2_0.svg)
 
 
 Now we define a second circuit which will hold our modified circuit, if you do not need to keep the previous circuit, you can skip this part and overwrite the previous circuit.
@@ -38,7 +38,7 @@ qc_clifford.draw('mpl')
 ```
 
 
-![Blank Circuit](/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_4_0.svg)
+![Blank Circuit](/n-blog/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_4_0.svg)
 
 <p style="text-align:center;"><img src="{{site.baseurl}}/assets/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_4_0.svg"></p>
 
@@ -79,7 +79,7 @@ qc_clifford.draw('mpl')
 ```
 
 
-![Clifford Circuit](/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_8_0.svg)
+![Clifford Circuit](/n-blog/figures/2020-09-08-Changing-Circuits_files/2020-09-08-Changing-Circuits_8_0.svg)
 
 # References
 

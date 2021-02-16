@@ -187,7 +187,7 @@ As a check, let's see how they measure the Y basis, and we can verify that it is
 tomography_circuits[1].draw('mpl')
 ```
 
-![tomography circuit](/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_14_0.svg)
+![tomography circuit](/n-blog/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_14_0.svg)
 
 ```python
 backend_sim = qsk.Aer.get_backend('qasm_simulator')
@@ -235,7 +235,7 @@ qc.cx(0,2)
 qc.draw('mpl')
 ```
 
-![tomography circuit](/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_22_0.svg)
+![tomography circuit](/n-blog/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_22_0.svg)
 
 In order to indicate which qubits we want to do tomography, we need to put an list after choosing the circuit that we want to do tomography. In this case, we want to do tomography of all qubits of qc, therefore we need to put `[0,1,2]`.
 
@@ -300,7 +300,7 @@ Ploting the density matrix, we see that there are states only on the first and l
 ```python
 plot_density_matrix(density_matrix)
 ```
-![Density matrix](/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_26_0.svg)
+![Density matrix](/n-blog/figures/2020-06-22-Tomography_files/2020-06-22-Tomography_26_0.svg)
 
 The code for this post is on [github](https://github.com/nahumsa/Introduction-to-IBM_Qiskit/blob/master/Notebooks/Tomography.ipynb).
 

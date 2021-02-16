@@ -19,17 +19,17 @@ Let's start with the simplest cellular automaton which is 1D with only neighbori
 At each iteration we need to give a rule in order to update our array. Each rule needs 3 cells as an input and outputs only one cell, therefore we have $2^3$ possible combinations for each cell can be black or white, thus we have $2^{2^3} = 256$ rules. Since this number can be represented in binary the simplest way to create a rule is to write the number of the rule in binary, this will give the exact output of the rule. As we can see some examples below:
 
 {{< rawhtml >}}
-<p style="text-align:center;"><img src="/figures/2020-06-26-Cellular-Automaton/Rule_0.jpg"></p>
+<p style="text-align:center;"><img src="/n-blog/figures/2020-06-26-Cellular-Automaton/Rule_0.jpg"></p>
 <h1 style="text-align:center;">$1_{10} = 00000000_2$</h1>
 {{< /rawhtml >}}
 --------------------------------------------------------------------------
 {{< rawhtml >}}
-<p style="text-align:center;"><img src="/figures/2020-06-26-Cellular-Automaton/Rule_1.jpg"></p>
+<p style="text-align:center;"><img src="/n-blog/figures/2020-06-26-Cellular-Automaton/Rule_1.jpg"></p>
 <h1 style="text-align:center;">$1_{10} = 00000001_2$</h1>
 {{< /rawhtml >}}
 --------------------------------------------------------------------------
 {{< rawhtml >}}
-<p style="text-align:center;"><img src="/figures/2020-06-26-Cellular-Automaton/Rule_30.jpg"></p>
+<p style="text-align:center;"><img src="/n-blog/figures/2020-06-26-Cellular-Automaton/Rule_30.jpg"></p>
 <h1 style="text-align:center;">$1_{10} = 00001110_2$</h1>
 {{< /rawhtml >}}
 --------------------------------------------------------------------------
@@ -133,7 +133,7 @@ Here are some examples:
 - **Rule 90**: This rule produces a fractal that is known as the Sierpinsky Triangle, which comes up when you have the binomial coefficient $\binom{N}{k} \mod 2$. That is, if we construct the Pascal's Triangle mod 2 we have the Sierpinsky Triangle. This is also known as an [additive cellular automaton](https://mathworld.wolfram.com/AdditiveCellularAutomaton.html), because of the relation with mod 2.
 
 {{< rawhtml >}}
-<p style="text-align:center;"><img src="/figures/2020-06-26-Cellular-Automaton/CA_90.png"></p>
+<p style="text-align:center;"><img src="/n-blog/figures/2020-06-26-Cellular-Automaton/CA_90.png"></p>
 <h1 style="text-align:center;">Rule 90</h1>
 {{< /rawhtml >}}
 

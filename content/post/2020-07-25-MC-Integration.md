@@ -10,7 +10,7 @@ author = "Nahum Sá"
 ## 1) Introduction
 In this blog post I will explain how to integrate an arbitrary function using Monte Carlo Integration basically we are shooting darts into a dartboard and accepting them according to a given criteria, we can represent this by the following gif:
 
-![GIF MC integration](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration.gif)
+![GIF MC integration](/n-blog/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration.gif)
 
 ## 2) Algorithm
 
@@ -149,7 +149,7 @@ plt.plot(x, f(x), label='Function', linewidth=6)
 plt.legend()
 plt.show()
 ```
-![Function approximation](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_8_0.png)
+![Function approximation](/n-blog/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_8_0.png)
 
 Let's see how the convergence of our method is affected by the sample size.
 
@@ -172,7 +172,7 @@ plt.xlabel("Number of Samples", size=16)
 plt.ylabel("Error", size=16)
 plt.show()
 ```
-![Convergence](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_11_0.png)
+![Convergence](/n-blog/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_11_0.png)
 
 ## Application 2: $f(x) = \frac{\sin x}{x^2}$
 
@@ -218,7 +218,7 @@ plt.plot(x, f(x), label='Function', linewidth=6)
 plt.legend()
 plt.show()
 ```
-![Approximation](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_16_0.png)
+![Approximation](/n-blog/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_16_0.png)
 
 As before, let's see the convergence of our method:
 
@@ -244,7 +244,7 @@ plt.xlabel("Number of Samples", size=16)
 plt.ylabel("Error", size=16)
 plt.show()
 ```
-![Convergence](/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_19_0.png)
+![Convergence](/n-blog/figures/2020-07-25-MC-Integration_files/2020-07-25-MC-Integration_19_0.png)
 
 # Conclusion
 

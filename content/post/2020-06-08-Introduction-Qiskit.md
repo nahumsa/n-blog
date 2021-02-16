@@ -81,7 +81,7 @@ circ.draw('mpl')
 ```
 
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_5_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_5_0.svg)
 
 ## 2.2) Adding Gates
 
@@ -103,7 +103,7 @@ circ.x(qreg[0]); #Add x on 0
 circ.draw('mpl')
 ```
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_7_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_7_0.svg)
 
 Now we apply the Haddamard gate on the first register, since the register is already on $\left| 1 \right>$ we have:
 
@@ -117,7 +117,7 @@ circ.h(qreg[0]); #Add x on 0
 circ.draw('mpl')
 ```
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_9_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_9_0.svg)
 
 In order to have an entangled state we shall use a gate that works on two qubits, this is done by the CNOT gate (also known as C-X), this will entangle the first and second qubit. It is important to note that now we have $$2^2 = 4$$ states (because we are working with two qubits). The CNOT works in this manner: 
 
@@ -140,7 +140,7 @@ circ.draw(output='mpl')
 ```
 
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_11_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_11_0.svg)
 
 ## 2.3) Running a simulation of our circuit locally
 
@@ -186,7 +186,7 @@ from qiskit.visualization import plot_state_city
 plot_state_city(outputstate)
 ```
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_18_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_18_0.svg)
 
 ### 2.3.2) qasm_simullator
 
@@ -202,7 +202,7 @@ circ.draw('mpl')
 ```
 
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_20_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_20_0.svg)
 
 We map the measurment from our quantum qubits to our classical bits.
 
@@ -212,7 +212,7 @@ circ.measure(qreg,creg)
 circ.draw('mpl')
 ```
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_22_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_22_0.svg)
 
 Now we can simulate a real quantum computer using qasm_simulator, we need to define how many times our circuit will run, this is called "shots", here we chose 1024 times. 
 
@@ -243,7 +243,7 @@ plot_histogram(counts)
 ```
 
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_27_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_27_0.svg)
 
 Therefore, we have approximately 50% shots on each state. This is exactly what we expected for the bell state.
 
@@ -345,7 +345,7 @@ counts_exp = result_exp.get_counts(circ)
 plot_histogram([counts_exp,counts], legend=['Device', 'Simulator'])
 ```
 
-![Circuit](/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_39_0.svg)
+![Circuit](/n-blog/figures/09-06-2020-Introduction-Qiskit_files/09-06-2020-Introduction-Qiskit_39_0.svg)
 
 We can see that on our simulator everything is perfect, but when running on a real device there are several errors that occurs when running your circuit. I will explain some ways to correct those errors using linear algebra on other notebooks.
 
