@@ -1,0 +1,200 @@
+<!doctype html><html prefix="og: http://ogp.me/ns#"><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>Variational Quantum Classifier</title><meta name=description content="1) Introduction There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.
+Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.80.0"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Variational Quantum Classifier"><meta property="og:description" content="1) Introduction There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.
+Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task."><meta property="og:type" content="article"><meta property="og:url" content="https://nahumsa.github.io/n-blog/2012-02-22-vqc/"><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/site.css><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous><link rel="shortcut icon" type=image/jpg href=https://nahumsa.github.io/n-blog/favicon.ico><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};window.addEventListener('load',(event)=>{document.querySelectorAll("mjx-container").forEach(function(x){x.parentElement.classList+='has-jax'})});</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script></head><body><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create','UA-170504520-1','auto');ga('send','pageview');}</script><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-social hint--top" data-hint=Twitter aria-label=Twitter href=https://twitter.com/sa_nahum rel=me><i class="fa fa-twitter" aria-hidden=true></i></a><a class="button-square button-social hint--top" data-hint=Github aria-label=Github href=https://github.com/nahumsa rel=me><i class="fa fa-github-alt" aria-hidden=true></i></a><a class="button-square button-social hint--top" data-hint=Email aria-label="Send an Email" href=mailto:nahumsa@cbpf.br><i class="fa fa-envelope" aria-hidden=true></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Variational Quantum Classifier</h1><p class="post-date post-line"><span>Published <time datetime=2021-02-22 itemprop=datePublished>Mon, Feb 22, 2021</time></span>
+<span>by</span>
+<span itemscope itemprop=author itemtype=https://schema.org/Person><span itemprop=name><a href=# itemprop=url rel=author>Nahum Sá</a></span></span></p></header><div class="post-content clearfix" itemprop=articleBody><a href="https://colab.research.google.com/drive/1qSb-6tIDrBUIeBahIuR-OSoQZUucyCVs?usp=sharing" target=_parent><img src=https://colab.research.google.com/assets/colab-badge.svg alt="Open In Colab"></a><h1 id=1-introduction>1) Introduction</h1><p>There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.</p><p>Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task.</p><p>For our example I will talk about the Variational Quantum Classifier which is an Hybrid Quantum-Classical algorithm that is used to classify data. In this demo I will be using <a href=https://pennylane.ai/>Pennylane</a>.</p><h1 id=2-algorithm>2) Algorithm</h1><p>The Variational Quantum Classifier (VQC) is consists of three parts:</p><ol><li>Encoding or Embedding;</li><li>Parametrized Quantum Circuit (Ansatz);</li><li>Loss Function.</li></ol><p><img src=/n-blog/figures/2021-02-22-VQC-Pennylane_files/Circuit.png alt=circuit>
+Image from <a href=https://arxiv.org/pdf/1804.00633.pdf>Schuld et al.</a></p><h2 id=21-quantum-embedding>2.1) Quantum Embedding</h2><p>Since we are using quantum circuits, we need a way to transform classical data into quantum data, this process is called Quantum Embedding and can be represented as:</p><p>$$
+\vec{x} \mapsto | \psi (\vec{x}) \rangle
+$$</p><p>Here I will present two kinds of quantum embeddings:</p><ul><li>Basis Embedding</li><li>Amplitude Embedding</li><li>Angle Embeddding</li></ul><h3 id=211-basis-embedding>2.1.1) Basis Embedding</h3><p>In this kind of embedding, we encode bit strings into quantum states by mapping them to the computational basis. Thus if we have a dataset $\mathcal{D} = { x^{(1)}, \dots, x^{(M)} }$ with cardinality $M$ we can encode all the dataset into a superposition of computational basis states:</p><p>$$
+| \mathcal{D} \rangle = \frac{1}{\sqrt{M}} \sum_{m=1}^M | x^{(m)} \rangle
+$$</p><p>As an example we have $\mathcal{D} = { 00 ,11 }$, we can encode this dataset as:</p><p>$$
+| \mathcal{D} \rangle = \frac{1}{2} \big[ |00 \rangle + | 11 \rangle \big]
+$$</p><p>This embedding can be done using the pennylane template <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.BasisEmbedding.html><code>BasisEmbedding</code></a>. Let&rsquo;s show one example:</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>import pennylane as qml
+import numpy as np
+
+# Initialize the device
+n_qubits = 2
+dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+
+@qml.qnode(dev)
+def basis_embedding(data):
+    
+    # Embedding
+    qml.templates.BasisEmbedding(data, wires=range(n_qubits))
+
+    return qml.state()
+
+features=np.array([0, 1])
+
+print(f&#34;Quantum State |01&gt;: {basis_embedding(features)}&#34;)
+
+features=np.array([1,0])
+
+print(f&#34;Quantum State |10&gt;: {basis_embedding(features)}&#34;)
+</code></pre></div><pre><code>Quantum State |01&gt;: [0.+0.j 1.+0.j 0.+0.j 0.+0.j]
+Quantum State |10&gt;: [0.+0.j 0.+0.j 1.+0.j 0.+0.j]
+</code></pre><p>As we can see in the code, the data is properly encoded into the computational basis. However, this is not a very efficient encoding, mainly because we want to encode continous data and this kind of encoding would be very inneficient to do this.</p><h3 id=212-amplitude-embedding>2.1.2) Amplitude Embedding</h3><p>In this encoding we will encode the data into amplitudes of a quantum state. Since all quantum states must be normalized, the first step is to normalize our entry data. Thus a normalized N dimensional datapoint x is represented by the amplitudes of the n-qubit quantum state $| \psi_x \rangle$:</p><p>$$
+| \psi_x \rangle = \sum_{i=1}^N x_i | i \rangle
+$$</p><p>Where $x_i$ is the i-th element of x and $| i \rangle$ is the i-th computational basis state.</p><p>For instance let&rsquo;s encode the datapoint $x = (0, 1, 4, 0)$ into a quantum state. First the normalized datapoint is $x_{\mathrm{norm}} = \frac{1}{\sqrt{4.123}} ( 0, 1, -4, 0)$, then we can encode into a quantum state:</p><p>$$
+| \psi_x \rangle = \frac{1}{\sqrt{4.123}} \bigg[ | 01 \rangle - | 10 \rangle \bigg]
+$$</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AmplitudeEmbedding.html><code>AmplitudeEmbedding</code></a>, which encodes a vector of lenght $2^n$ into n qubits.</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback># Initialize the device
+n_qubits = 2
+dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+
+@qml.qnode(dev)
+def basis_embedding(data):
+    
+    # Embedding
+    # This will normalize the data for us
+    qml.templates.AmplitudeEmbedding(data, wires=range(n_qubits), normalize=True)
+
+    return qml.state()
+
+x = np.array([0., 1., 4., 0.])
+x_norm = x/np.linalg.norm(x)
+print(f&#34;Normalized datapoint: {x_norm}&#34;)
+print(f&#34;Quantum State: {basis_embedding(x)}&#34;)
+</code></pre></div><pre><code>Normalized datapoint: [0.         0.24253563 0.9701425  0.        ]
+Quantum State: [0.        +0.j 0.24253563+0.j 0.9701425 +0.j 0.        +0.j]
+</code></pre><h3 id=213-angle-embedding>2.1.3) Angle Embedding</h3><p>Another approach is to encode data into qubit rotations, this has the downside of needing n qubits for n-dimensional datapoint, but has the upside of being more easy to implement.</p><p>A N-dimensional datapoint $x$ will be represented by N qubits of the form:</p><p>$$
+| \psi_x \rangle = \bigotimes_{i=1}^{N} R_j(x_i) | 0 \rangle
+$$</p><p>Where $R_j$ is the rotation on the j-th axis and i can be around the X,Y and Z axis, the $\bigotimes$ symbol representes that each rotation is independent from each other and act only on one qubit.</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AngleEmbedding.html><code>AngleEmbedding</code></a>.</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback># Initialize the device
+n_qubits = 2
+dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+
+@qml.qnode(dev)
+def basis_embedding(data):
+    
+    # Embedding
+    # This will normalize the data for us
+    qml.templates.AngleEmbedding(data, wires=range(n_qubits))
+
+    return qml.state()
+
+x = np.array([.5, 1.2])
+
+print(f&#34;Quantum State: {basis_embedding(x)}\n&#34;)
+print(basis_embedding.draw())
+</code></pre></div><pre><code>Quantum State: [ 0.79967793+0.j          0.        -0.54708911j  0.        -0.2041913j
+ -0.13969478+0.j        ]
+
+ 0: ──RX(0.5)──╭┤ State 
+ 1: ──RX(1.2)──╰┤ State 
+</code></pre><h2 id=22-variational-circuit>2.2) Variational Circuit</h2><p>After encoding the data we need to create our proper Quantum Neural Network which will consist of a parametrized quantum circuit. The construction of this circuit can be done in plethora of ways which can be seen in the pennylane <a href=https://pennylane.readthedocs.io/en/stable/introduction/templates.html>layers templates page</a> for instance.</p><p>The main idea is to construct a parametrized unitary $U(\theta)$ which we will tune the parameters in order to tell us from which class the data belongs.</p><h2 id=23-loss-function>2.3) Loss Function</h2><p>The loss function is the function that we want to minimize in order to solve the task that we want. There are several loss functions that can be used and will further explained in future posts.</p><h1 id=3-using-vqc-for-the-iris-dataset>3) Using VQC for the iris dataset</h1><p>Now I will implement the Variational Quantum Classifier for the famous <a href=https://archive.ics.uci.edu/ml/datasets/iris>Iris dataset</a>. The goal for this dataset is to classify the class of iris plant using attributes of the plant.</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>import sys
+import pennylane as qml
+import numpy as np
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from tqdm import tqdm
+</code></pre></div><h2 id=31-loading-the-dataset>3.1) Loading the dataset</h2><p>We load the Iris dataset from sklearn datasets and split into a training and validation split as usual..</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>iris = datasets.load_iris()
+X = iris.data[:, :]
+Y = iris.target
+
+X_train, X_valid, Y_train, Y_valid = train_test_split(X, Y, test_size=0.25, random_state=42)
+</code></pre></div><h2 id=32-constructing-the-variational-circuit>3.2) Constructing the Variational Circuit</h2><p>In order to construct the variational circuit, we need three steps:</p><ul><li>Embed the data into a quantum state: Which II use the angle embedding;</li><li>Create a Parametetrized Quantum Circuit (PQC): Which I will use the Strongly Entangling Layers Template;</li><li>Measure the qubits: Since we are classifying three classes, I will measure all three qubits using the expectation Z value on each one.</li></ul><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>n_qubits = X_train.shape[1]
+dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+
+@qml.qnode(dev)
+def circuit(weights, data):
+    # Embedding
+    qml.templates.AngleEmbedding(data, wires=range(n_qubits))
+    
+    # Create Parametrized layer
+    qml.templates.StronglyEntanglingLayers(weights, wires=range(n_qubits))
+
+    return [qml.expval(qml.PauliZ(0)) ,qml.expval(qml.PauliZ(1)), qml.expval(qml.PauliZ(2))]
+</code></pre></div><h2 id=32-defining-the-cost-function>3.2) Defining the cost function</h2><p>In order to use the mean squared error loss function it is need to one hot encode each label into a vector and then use each expectation value from the circuit to approximate each class.</p><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>def cost(weights, x, y):
+    &#34;&#34;&#34; Define the cost function for the classification task.
+    &#34;&#34;&#34;
+    epoch_loss = []
+    label2vec = {
+        0: [1, 0, 0],
+        1: [0, 1, 0],
+        2: [0, 0, 1]
+    }
+    
+    for x_data, y_data in zip(x,y):
+        c = circuit(weights, x_data)
+        label = label2vec[y_data]
+        c, label = np.array(c),np.array(label)
+        s = np.sum(abs(c - label)**2)
+    
+        epoch_loss.append(s)
+    
+    return np.sum(epoch_loss) / len(epoch_loss)
+
+# Define the accuracy
+accuracy = lambda x,y: np.sum(x == y) / len(x)
+
+def iterate_minibatches(inputs, targets, batch_size):
+    &#34;&#34;&#34; A generator for batches of the input data
+    &#34;&#34;&#34;
+    for start_idx in range(0, inputs.shape[0] - batch_size + 1, batch_size):
+        idxs = slice(start_idx, start_idx + batch_size)
+        yield inputs[idxs], targets[idxs]
+</code></pre></div><h2 id=35-training>3.5) Training</h2><p>In order to train we need to define hyperparameters, weight initialization and the optimizer.</p><ul><li><p>Optimizer: I choose to use Adam;</p></li><li><p>Intialization: I choose to initialize with a random uniform distribution of angles, even though this has been show to present barren plateaus on the loss landscape, maybe in a future post I will talk about mitigating barren plateaus;</p></li><li><p>Hyperparameters: I choose 2 layers for the PQC, and a learning rate of 0.1;</p></li></ul><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback># Hyperparameters
+layers = 2
+learning_rate = 0.05
+epochs = 10
+batch_size = 10
+
+# Optimizer
+opt = qml.AdamOptimizer(learning_rate)#, beta1=0.9, beta2=0.999)
+
+# Initialize Random Weights
+params = np.random.uniform(low= 0, high= np.pi, size=(layers, n_qubits, 3))
+
+# Helpers
+val_acc = []
+t_acc = []
+t_loss = []
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback># Training
+for i in tqdm(range(epochs)):
+    train_acc = []
+    for Xbatch, Ybatch in iterate_minibatches(X_train, Y_train, batch_size=batch_size):
+        params = opt.step(lambda v: cost(v, Xbatch, Ybatch), params)
+    
+    
+    train_predictions = []
+    for x in X_train:
+        pred = circuit(params, x)
+        label = np.argmax(pred)
+        train_predictions.append(label)
+    
+    train_acc = accuracy(train_predictions,Y_train)
+    t_acc.append(train_acc)   
+    
+    valid_predictions = []
+    for x in X_valid:
+        pred = circuit(params, x)
+        label = np.argmax(pred)
+        valid_predictions.append(label)
+    
+    valid_acc = accuracy(valid_predictions,Y_valid)
+    val_acc.append(valid_acc)
+
+    loss = np.mean(cost(params, X_train, Y_train))
+    t_loss.append(loss)
+</code></pre></div><pre><code>100%|██████████| 10/10 [00:41&lt;00:00,  4.16s/it]
+</code></pre><div class=highlight><pre class=chroma><code class=language-fallback data-lang=fallback>import matplotlib.pyplot as plt
+
+epochs = range(len(t_loss))
+
+
+fig = plt.figure(figsize=(14,5))
+gs = fig.add_gridspec(1, 2)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[0, 1])
+
+ax1.plot(epochs, t_loss)
+ax1.set_xlabel(&#39;Epochs&#39;)
+ax1.set_ylabel(&#39;Loss&#39;)
+
+ax2.plot(epochs, t_acc, label=&#39;Train&#39;)
+ax2.plot(epochs, val_acc, label=&#39;Validation&#39;)
+ax2.set_xlabel(&#39;Epochs&#39;)
+ax2.set_ylabel(&#39;Accuracy&#39;)
+plt.legend()
+plt.show()
+</code></pre></div><p><img src=/n-blog/figures/2021-02-22-VQC-Pennylane_files/VQC_Pennylane_24_0.png alt=png></p><h1 id=references>References</h1><ul><li><p><a href=https://pennylane.ai/qml/demos/tutorial_variational_classifier.html>Variational Classifier Pennylane Demo</a></p></li><li><p><a href=https://pennylane.ai/qml/glossary/quantum_embedding.html>Quantum Embedding</a></p></li><li><p><a href=https://arxiv.org/abs/1804.00633>Circuit-Centric quantum classifiers</a></p></li></ul></div><footer class="post-footer clearfix"><div class=share><a class=icon-twitter href="https://twitter.com/share?text=Variational%20Quantum%20Classifier&url=https%3a%2f%2fnahumsa.github.io%2fn-blog%2f2012-02-22-vqc%2f" onclick="window.open(this.href,'twitter-share','width=550,height=235');return false;" aria-label="Share on Twitter"><i class="fa fa-twitter" aria-hidden=true></i></a></div></footer></article></div></div></div><footer class=footer><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-jump-top js-jump-top" href=# aria-label="Back to Top"><i class="fa fa-angle-up" aria-hidden=true></i></a></div><p class=footer-copyright><span>&copy; 2021 / Powered by <a href=https://gohugo.io/>Hugo</a></span></p><p class=footer-copyright><span><a href=https://github.com/roryg/ghostwriter>Ghostwriter theme</a> By <a href=http://jollygoodthemes.com>JollyGoodThemes</a></span>
+<span>/ <a href=https://github.com/jbub/ghostwriter>Ported</a> to Hugo By <a href=https://github.com/jbub>jbub</a></span></p></div></footer><script src=https://nahumsa.github.io/n-blog/js/jquery-1.11.3.min.js></script><script src=https://nahumsa.github.io/n-blog/js/jquery.fitvids.js></script><script src=https://nahumsa.github.io/n-blog/js/scripts.js></script></body></html>
