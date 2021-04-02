@@ -1,19 +1,21 @@
 <!doctype html><html prefix="og: http://ogp.me/ns#"><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>Creating a simple Neural Network in JAX</title><meta name=description content="Creating a neural network in JAX JAX is a new python library that offers autograd and XLA, leading to high-performance machine learning, and numeric research. JAX works just as numpy and using jit (just in time) compilation, you can have high-performance without going to low level languages. One awesome thing is that, just as tensorflow, you can use GPUs and TPUs for acceleration.
-In this post my aim is to build and train a simple Convolutional Neural Network using JAX."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.81.0"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Creating a simple Neural Network in JAX"><meta property="og:description" content="Creating a neural network in JAX JAX is a new python library that offers autograd and XLA, leading to high-performance machine learning, and numeric research. JAX works just as numpy and using jit (just in time) compilation, you can have high-performance without going to low level languages. One awesome thing is that, just as tensorflow, you can use GPUs and TPUs for acceleration.
-In this post my aim is to build and train a simple Convolutional Neural Network using JAX."><meta property="og:type" content="article"><meta property="og:url" content="https://nahumsa.github.io/n-blog/2020-09-25-nn-jax/"><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/site.css><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous><link rel="shortcut icon" type=image/jpg href=https://nahumsa.github.io/n-blog/favicon.ico><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:!0,processEnvironments:!0},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}},window.addEventListener('load',a=>{document.querySelectorAll("mjx-container").forEach(function(a){a.parentElement.classList+='has-jax'})})</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script></head><body><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-170504520-1','auto'),ga('send','pageview'))</script><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-social hint--top" data-hint=Twitter aria-label=Twitter href=https://twitter.com/sa_nahum rel=me><i class="fa fa-twitter" aria-hidden=true></i></a><a class="button-square button-social hint--top" data-hint=Github aria-label=Github href=https://github.com/nahumsa rel=me><i class="fa fa-github-alt" aria-hidden=true></i></a><a class="button-square button-social hint--top" data-hint=Email aria-label="Send an Email" href=mailto:nahumsa@cbpf.br><i class="fa fa-envelope" aria-hidden=true></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Creating a simple Neural Network in JAX</h1><p class="post-date post-line"><span>Published <time datetime=2020-09-25 itemprop=datePublished>Fri, Sep 25, 2020</time></span>
+In this post my aim is to build and train a simple Convolutional Neural Network using JAX."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.82.0"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Creating a simple Neural Network in JAX"><meta property="og:description" content="Creating a neural network in JAX JAX is a new python library that offers autograd and XLA, leading to high-performance machine learning, and numeric research. JAX works just as numpy and using jit (just in time) compilation, you can have high-performance without going to low level languages. One awesome thing is that, just as tensorflow, you can use GPUs and TPUs for acceleration.
+In this post my aim is to build and train a simple Convolutional Neural Network using JAX."><meta property="og:type" content="article"><meta property="og:url" content="https://nahumsa.github.io/n-blog/2020-09-25-nn-jax/"><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/site.css><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous><link rel="shortcut icon" type=image/jpg href=https://nahumsa.github.io/n-blog/favicon.ico><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:!0,processEnvironments:!0},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}},window.addEventListener('load',a=>{document.querySelectorAll("mjx-container").forEach(function(a){a.parentElement.classList+='has-jax'})})</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script></head><body><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-170504520-1','auto'),ga('send','pageview'))</script><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-social hint--top" data-hint=Twitter aria-label=Twitter href=https://twitter.com/sa_nahum rel=me><i class="fa fa-twitter" aria-hidden=true></i></a>
+<a class="button-square button-social hint--top" data-hint=Github aria-label=Github href=https://github.com/nahumsa rel=me><i class="fa fa-github-alt" aria-hidden=true></i></a>
+<a class="button-square button-social hint--top" data-hint=Email aria-label="Send an Email" href=mailto:nahumsa@cbpf.br><i class="fa fa-envelope" aria-hidden=true></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Creating a simple Neural Network in JAX</h1><p class="post-date post-line"><span>Published <time datetime=2020-09-25 itemprop=datePublished>Fri, Sep 25, 2020</time></span>
 <span>by</span>
-<span itemscope itemprop=author itemtype=https://schema.org/Person><span itemprop=name><a href=# itemprop=url rel=author>Nahum Sá</a></span></span></p></header><div class="post-content clearfix" itemprop=articleBody><p><a href=https://colab.research.google.com/github/nahumsa/JAX/blob/master/Simple%20NN%20JAX.ipynb><img src=https://colab.research.google.com/assets/colab-badge.svg alt=Colab></a></p><h1 id=creating-a-neural-network-in-jax>Creating a neural network in JAX</h1><p><a href=https://github.com/google/jax>JAX</a> is a new python library that offers autograd and XLA, leading to high-performance machine learning, and numeric research. JAX works just as numpy and using jit (just in time) compilation, you can have high-performance without going to low level languages. One awesome thing is that, just as tensorflow, you can use GPUs and TPUs for acceleration.</p><p>In this post my aim is to build and train a simple Convolutional Neural Network using JAX.</p><h1 id=1-using-vmap-grad-and-jit>1) Using vmap, grad and jit</h1><h2 id=11-jit>1.1) jit</h2><p>In order to speed up your code, you can use the jit decorator, <code>@jit</code> which will cached your operation. Let&rsquo;s compare the speed with and without jit. This example is taken from the <a href=https://jax.readthedocs.io/en/latest/notebooks/quickstart.html>Jax Quickstart Guide</a></p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>random</span>
-<span class=kn>import</span> <span class=nn>jax.numpy</span> <span class=kn>as</span> <span class=nn>np</span>
+<span itemscope itemprop=author itemtype=https://schema.org/Person><span itemprop=name><a href=# itemprop=url rel=author>Nahum Sá</a></span></span></p></header><div class="post-content clearfix" itemprop=articleBody><p><a href=https://colab.research.google.com/github/nahumsa/JAX/blob/master/Simple%20NN%20JAX.ipynb><img src=https://colab.research.google.com/assets/colab-badge.svg alt=Colab></a></p><h1 id=creating-a-neural-network-in-jax>Creating a neural network in JAX</h1><p><a href=https://github.com/google/jax>JAX</a> is a new python library that offers autograd and XLA, leading to high-performance machine learning, and numeric research. JAX works just as numpy and using jit (just in time) compilation, you can have high-performance without going to low level languages. One awesome thing is that, just as tensorflow, you can use GPUs and TPUs for acceleration.</p><p>In this post my aim is to build and train a simple Convolutional Neural Network using JAX.</p><h1 id=1-using-vmap-grad-and-jit>1) Using vmap, grad and jit</h1><h2 id=11-jit>1.1) jit</h2><p>In order to speed up your code, you can use the jit decorator, <code>@jit</code> which will cached your operation. Let&rsquo;s compare the speed with and without jit. This example is taken from the <a href=https://jax.readthedocs.io/en/latest/notebooks/quickstart.html>Jax Quickstart Guide</a></p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> random
+<span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>jax.numpy</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>np</span>
 
-<span class=k>def</span> <span class=nf>selu</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>1.67</span><span class=p>,</span> <span class=n>lmbda</span><span class=o>=</span><span class=mf>1.05</span><span class=p>):</span>
-  <span class=k>return</span> <span class=n>lmbda</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>where</span><span class=p>(</span><span class=n>x</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>,</span> <span class=n>x</span><span class=p>,</span> <span class=n>alpha</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>exp</span><span class=p>(</span><span class=n>x</span><span class=p>)</span> <span class=o>-</span> <span class=n>alpha</span><span class=p>)</span>
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>selu</span>(x, alpha<span style=color:#555>=</span><span style=color:#f60>1.67</span>, lmbda<span style=color:#555>=</span><span style=color:#f60>1.05</span>):
+  <span style=color:#069;font-weight:700>return</span> lmbda <span style=color:#555>*</span> np<span style=color:#555>.</span>where(x <span style=color:#555>&gt;</span> <span style=color:#f60>0</span>, x, alpha <span style=color:#555>*</span> np<span style=color:#555>.</span>exp(x) <span style=color:#555>-</span> alpha)
 
-<span class=n>key</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=n>PRNGKey</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
-<span class=n>x</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=p>(</span><span class=mi>1000000</span><span class=p>,))</span>
-<span class=o>%</span><span class=n>timeit</span> <span class=n>selu</span><span class=p>(</span><span class=n>x</span><span class=p>)</span><span class=o>.</span><span class=n>block_until_ready</span><span class=p>()</span>
-</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>jit</span>
-<span class=n>selu_jit</span> <span class=o>=</span> <span class=n>jit</span><span class=p>(</span><span class=n>selu</span><span class=p>)</span>
-<span class=o>%</span><span class=n>timeit</span> <span class=n>selu_jit</span><span class=p>(</span><span class=n>x</span><span class=p>)</span><span class=o>.</span><span class=n>block_until_ready</span><span class=p>()</span>
+key <span style=color:#555>=</span> random<span style=color:#555>.</span>PRNGKey(<span style=color:#f60>0</span>)
+x <span style=color:#555>=</span> random<span style=color:#555>.</span>normal(key, (<span style=color:#f60>1000000</span>,))
+<span style=color:#555>%</span>timeit selu(x)<span style=color:#555>.</span>block_until_ready()
+</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> jit
+selu_jit <span style=color:#555>=</span> jit(selu)
+<span style=color:#555>%</span>timeit selu_jit(x)<span style=color:#555>.</span>block_until_ready()
 </code></pre></div><pre><code>The slowest run took 23.63 times longer than the fastest. This could mean that an intermediate result is being cached.
 1000 loops, best of 3: 1.46 ms per loop
 </code></pre><p>We see that with jit, we go 6 ms faster than without jit. Another remark is that we put the <code>block_until_ready()</code> method because asynchronous update by default.</p><h2 id=12-grad>1.2) grad</h2><p>Taking the gradient in JAX is pretty easy, you just need to call the <code>grad</code> function from the JAX library. Let&rsquo;s begin with a simple example that is calculating the grad of $x^2$. From calculus, we know that:</p><p>$$
@@ -22,199 +24,199 @@ $$</p><p>$$
 \frac{\partial^2 x^2}{\partial x^2} = 2
 $$</p><p>$$
 \frac{\partial^3 x^2}{\partial x^3} = 0
-$$</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>grad</span>
-<span class=n>square</span> <span class=o>=</span> <span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>square</span><span class=p>(</span><span class=n>x</span><span class=p>)</span>
+$$</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> grad
+square <span style=color:#555>=</span> <span style=color:#069;font-weight:700>lambda</span> x: np<span style=color:#555>.</span>square(x)
 
-<span class=n>grad_square</span> <span class=o>=</span> <span class=n>grad</span><span class=p>(</span><span class=n>square</span><span class=p>)</span>
-<span class=n>grad_grad_square</span> <span class=o>=</span> <span class=n>grad</span><span class=p>(</span><span class=n>grad</span><span class=p>(</span><span class=n>square</span><span class=p>))</span>
-<span class=n>grad_grad_grad_square</span> <span class=o>=</span> <span class=n>grad</span><span class=p>(</span><span class=n>grad</span><span class=p>(</span><span class=n>grad</span><span class=p>(</span><span class=n>square</span><span class=p>)))</span>
-<span class=k>print</span><span class=p>(</span><span class=n>f</span><span class=s2>&#34;grad 2² = &#34;</span><span class=p>,</span> <span class=n>grad_square</span><span class=p>(</span><span class=mf>2.</span><span class=p>))</span>
-<span class=k>print</span><span class=p>(</span><span class=n>f</span><span class=s2>&#34;grad grad 2² = &#34;</span><span class=p>,</span> <span class=n>grad_grad_square</span><span class=p>(</span><span class=mf>2.</span><span class=p>))</span>
-<span class=k>print</span><span class=p>(</span><span class=n>f</span><span class=s2>&#34;grad grad grad 2² = &#34;</span><span class=p>,</span> <span class=n>grad_grad_grad_square</span><span class=p>(</span><span class=mf>2.</span><span class=p>))</span>
+grad_square <span style=color:#555>=</span> grad(square)
+grad_grad_square <span style=color:#555>=</span> grad(grad(square))
+grad_grad_grad_square <span style=color:#555>=</span> grad(grad(grad(square)))
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;grad 2² = &#34;</span>, grad_square(<span style=color:#f60>2.</span>))
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;grad grad 2² = &#34;</span>, grad_grad_square(<span style=color:#f60>2.</span>))
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;grad grad grad 2² = &#34;</span>, grad_grad_grad_square(<span style=color:#f60>2.</span>))
 </code></pre></div><pre><code>grad 2² =  4.0
 grad grad 2² =  2.0
 grad grad grad 2² =  0.0
-</code></pre><h2 id=13-vmap>1.3) vmap</h2><p>vmap, or vectorizing map, maps a function along array axes, having better performance mainly when is composed with jit. Let&rsquo;s apply this for matrix-vector products.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>mat</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=p>(</span><span class=mi>150</span><span class=p>,</span> <span class=mi>100</span><span class=p>))</span>
-<span class=n>batched_x</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=mi>100</span><span class=p>))</span>
+</code></pre><h2 id=13-vmap>1.3) vmap</h2><p>vmap, or vectorizing map, maps a function along array axes, having better performance mainly when is composed with jit. Let&rsquo;s apply this for matrix-vector products.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>mat <span style=color:#555>=</span> random<span style=color:#555>.</span>normal(key, (<span style=color:#f60>150</span>, <span style=color:#f60>100</span>))
+batched_x <span style=color:#555>=</span> random<span style=color:#555>.</span>normal(key, (<span style=color:#f60>10</span>, <span style=color:#f60>100</span>))
 
-<span class=k>def</span> <span class=nf>apply_matrix</span><span class=p>(</span><span class=n>v</span><span class=p>):</span>
-  <span class=k>return</span> <span class=n>np</span><span class=o>.</span><span class=n>dot</span><span class=p>(</span><span class=n>mat</span><span class=p>,</span> <span class=n>v</span><span class=p>)</span>
-</code></pre></div><p>In order to batch naively, we can use a for loop to batch.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>naively_batched_apply_matrix</span><span class=p>(</span><span class=n>v_batched</span><span class=p>):</span>
-  <span class=k>return</span> <span class=n>np</span><span class=o>.</span><span class=n>stack</span><span class=p>([</span><span class=n>apply_matrix</span><span class=p>(</span><span class=n>v</span><span class=p>)</span> <span class=k>for</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>v_batched</span><span class=p>])</span>
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>apply_matrix</span>(v):
+  <span style=color:#069;font-weight:700>return</span> np<span style=color:#555>.</span>dot(mat, v)
+</code></pre></div><p>In order to batch naively, we can use a for loop to batch.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>naively_batched_apply_matrix</span>(v_batched):
+  <span style=color:#069;font-weight:700>return</span> np<span style=color:#555>.</span>stack([apply_matrix(v) <span style=color:#069;font-weight:700>for</span> v <span style=color:#000;font-weight:700>in</span> v_batched])
 
-<span class=k>print</span><span class=p>(</span><span class=s1>&#39;Naively batched&#39;</span><span class=p>)</span>
-<span class=o>%</span><span class=n>timeit</span> <span class=n>naively_batched_apply_matrix</span><span class=p>(</span><span class=n>batched_x</span><span class=p>)</span><span class=o>.</span><span class=n>block_until_ready</span><span class=p>()</span>
+<span style=color:#069;font-weight:700>print</span>(<span style=color:#c30>&#39;Naively batched&#39;</span>)
+<span style=color:#555>%</span>timeit naively_batched_apply_matrix(batched_x)<span style=color:#555>.</span>block_until_ready()
 </code></pre></div><pre><code>Naively batched
 100 loops, best of 3: 4.63 ms per loop
-</code></pre><p>Now we can use vmap to batch our multiplication</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>vmap</span>
+</code></pre><p>Now we can use vmap to batch our multiplication</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> vmap
 
-<span class=nd>@jit</span>
-<span class=k>def</span> <span class=nf>vmap_batched_apply_matrix</span><span class=p>(</span><span class=n>v_batched</span><span class=p>):</span>
-  <span class=k>return</span> <span class=n>vmap</span><span class=p>(</span><span class=n>apply_matrix</span><span class=p>)(</span><span class=n>v_batched</span><span class=p>)</span>
+<span style=color:#99f>@jit</span>
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>vmap_batched_apply_matrix</span>(v_batched):
+  <span style=color:#069;font-weight:700>return</span> vmap(apply_matrix)(v_batched)
 
-<span class=k>print</span><span class=p>(</span><span class=s1>&#39;Auto-vectorized with vmap&#39;</span><span class=p>)</span>
-<span class=o>%</span><span class=n>timeit</span> <span class=n>vmap_batched_apply_matrix</span><span class=p>(</span><span class=n>batched_x</span><span class=p>)</span><span class=o>.</span><span class=n>block_until_ready</span><span class=p>()</span>
+<span style=color:#069;font-weight:700>print</span>(<span style=color:#c30>&#39;Auto-vectorized with vmap&#39;</span>)
+<span style=color:#555>%</span>timeit vmap_batched_apply_matrix(batched_x)<span style=color:#555>.</span>block_until_ready()
 </code></pre></div><pre><code>Auto-vectorized with vmap
 The slowest run took 57.86 times longer than the fastest. This could mean that an intermediate result is being cached.
 1000 loops, best of 3: 281 µs per loop
-</code></pre><p>Now we can apply this for creating neural networks.</p><h1 id=2--using-stax-for-convolutional-neural-networks>2 ) Using STAX for Convolutional Neural Networks</h1><p>As a first example, we shall use MNIST (as always) to train a convolutional neural network using stax. It is important to import the original numpy package for shuffling and random generation.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>import</span> <span class=nn>jax.numpy</span> <span class=kn>as</span> <span class=nn>np</span>
-<span class=kn>import</span> <span class=nn>numpy</span> <span class=kn>as</span> <span class=nn>onp</span>
-</code></pre></div><p>Let&rsquo;s import MNIST using <code>tensorflow_datasets</code> and transform the data into a np.array.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>import</span> <span class=nn>tensorflow_datasets</span> <span class=kn>as</span> <span class=nn>tfds</span>
-<span class=n>data_dir</span> <span class=o>=</span> <span class=s1>&#39;/tmp/tfds&#39;</span>
-<span class=n>mnist_data</span><span class=p>,</span> <span class=n>info</span> <span class=o>=</span> <span class=n>tfds</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>&#34;mnist&#34;</span><span class=p>,</span> <span class=n>batch_size</span><span class=o>=-</span><span class=mi>1</span><span class=p>,</span> <span class=n>data_dir</span><span class=o>=</span><span class=n>data_dir</span><span class=p>,</span> <span class=n>with_info</span><span class=o>=</span><span class=bp>True</span><span class=p>)</span>
-<span class=n>mnist_data</span> <span class=o>=</span> <span class=n>tfds</span><span class=o>.</span><span class=n>as_numpy</span><span class=p>(</span><span class=n>mnist_data</span><span class=p>)</span>
-<span class=n>train_data</span><span class=p>,</span> <span class=n>test_data</span> <span class=o>=</span> <span class=n>mnist_data</span><span class=p>[</span><span class=s1>&#39;train&#39;</span><span class=p>],</span> <span class=n>mnist_data</span><span class=p>[</span><span class=s1>&#39;test&#39;</span><span class=p>]</span>
-<span class=n>num_labels</span> <span class=o>=</span> <span class=n>info</span><span class=o>.</span><span class=n>features</span><span class=p>[</span><span class=s1>&#39;label&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>num_classes</span>
-<span class=n>h</span><span class=p>,</span> <span class=n>w</span><span class=p>,</span> <span class=n>c</span> <span class=o>=</span> <span class=n>info</span><span class=o>.</span><span class=n>features</span><span class=p>[</span><span class=s1>&#39;image&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>shape</span>
-<span class=n>num_pixels</span> <span class=o>=</span> <span class=n>h</span> <span class=o>*</span> <span class=n>w</span> <span class=o>*</span> <span class=n>c</span>
+</code></pre><p>Now we can apply this for creating neural networks.</p><h1 id=2--using-stax-for-convolutional-neural-networks>2 ) Using STAX for Convolutional Neural Networks</h1><p>As a first example, we shall use MNIST (as always) to train a convolutional neural network using stax. It is important to import the original numpy package for shuffling and random generation.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>jax.numpy</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>np</span>
+<span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>numpy</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>onp</span>
+</code></pre></div><p>Let&rsquo;s import MNIST using <code>tensorflow_datasets</code> and transform the data into a np.array.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>tensorflow_datasets</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>tfds</span>
+data_dir <span style=color:#555>=</span> <span style=color:#c30>&#39;/tmp/tfds&#39;</span>
+mnist_data, info <span style=color:#555>=</span> tfds<span style=color:#555>.</span>load(name<span style=color:#555>=</span><span style=color:#c30>&#34;mnist&#34;</span>, batch_size<span style=color:#555>=-</span><span style=color:#f60>1</span>, data_dir<span style=color:#555>=</span>data_dir, with_info<span style=color:#555>=</span>True)
+mnist_data <span style=color:#555>=</span> tfds<span style=color:#555>.</span>as_numpy(mnist_data)
+train_data, test_data <span style=color:#555>=</span> mnist_data[<span style=color:#c30>&#39;train&#39;</span>], mnist_data[<span style=color:#c30>&#39;test&#39;</span>]
+num_labels <span style=color:#555>=</span> info<span style=color:#555>.</span>features[<span style=color:#c30>&#39;label&#39;</span>]<span style=color:#555>.</span>num_classes
+h, w, c <span style=color:#555>=</span> info<span style=color:#555>.</span>features[<span style=color:#c30>&#39;image&#39;</span>]<span style=color:#555>.</span>shape
+num_pixels <span style=color:#555>=</span> h <span style=color:#555>*</span> w <span style=color:#555>*</span> c
 
-<span class=kn>from</span> <span class=nn>IPython.display</span> <span class=kn>import</span> <span class=n>clear_output</span>
-<span class=n>clear_output</span><span class=p>()</span>
-</code></pre></div><p>Let&rsquo;s split the training and test dataset and one hot encode the labels of our data.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>one_hot</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>k</span><span class=p>,</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>float32</span><span class=p>):</span>
-    <span class=s2>&#34;&#34;&#34;Create a one-hot encoding of x of size k &#34;&#34;&#34;</span>
-    <span class=k>return</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>x</span><span class=p>[:,</span> <span class=bp>None</span><span class=p>]</span> <span class=o>==</span> <span class=n>np</span><span class=o>.</span><span class=n>arange</span><span class=p>(</span><span class=n>k</span><span class=p>),</span> <span class=n>dtype</span><span class=p>)</span>
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>IPython.display</span> <span style=color:#069;font-weight:700>import</span> clear_output
+clear_output()
+</code></pre></div><p>Let&rsquo;s split the training and test dataset and one hot encode the labels of our data.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>one_hot</span>(x, k, dtype<span style=color:#555>=</span>np<span style=color:#555>.</span>float32):
+    <span style=color:#c30>&#34;&#34;&#34;Create a one-hot encoding of x of size k &#34;&#34;&#34;</span>
+    <span style=color:#069;font-weight:700>return</span> np<span style=color:#555>.</span>array(x[:, None] <span style=color:#555>==</span> np<span style=color:#555>.</span>arange(k), dtype)
 
-<span class=c1># Full train set</span>
-<span class=n>train_images</span><span class=p>,</span> <span class=n>train_labels</span> <span class=o>=</span> <span class=n>train_data</span><span class=p>[</span><span class=s1>&#39;image&#39;</span><span class=p>],</span> <span class=n>train_data</span><span class=p>[</span><span class=s1>&#39;label&#39;</span><span class=p>]</span>
-<span class=n>train_images</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>moveaxis</span><span class=p>(</span><span class=n>train_images</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
+<span style=color:#09f;font-style:italic># Full train set</span>
+train_images, train_labels <span style=color:#555>=</span> train_data[<span style=color:#c30>&#39;image&#39;</span>], train_data[<span style=color:#c30>&#39;label&#39;</span>]
+train_images <span style=color:#555>=</span> np<span style=color:#555>.</span>array(np<span style=color:#555>.</span>moveaxis(train_images, <span style=color:#555>-</span><span style=color:#f60>1</span>, <span style=color:#f60>1</span>), dtype<span style=color:#555>=</span>np<span style=color:#555>.</span>float32)
 
-<span class=n>train_labels</span> <span class=o>=</span> <span class=n>one_hot</span><span class=p>(</span><span class=n>train_labels</span><span class=p>,</span> <span class=n>num_labels</span><span class=p>)</span>
+train_labels <span style=color:#555>=</span> one_hot(train_labels, num_labels)
 
-<span class=c1># Full test set</span>
-<span class=n>test_images</span><span class=p>,</span> <span class=n>test_labels</span> <span class=o>=</span> <span class=n>test_data</span><span class=p>[</span><span class=s1>&#39;image&#39;</span><span class=p>],</span> <span class=n>test_data</span><span class=p>[</span><span class=s1>&#39;label&#39;</span><span class=p>]</span>
-<span class=n>test_images</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>array</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>moveaxis</span><span class=p>(</span><span class=n>test_images</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>),</span> <span class=n>dtype</span><span class=o>=</span><span class=n>np</span><span class=o>.</span><span class=n>float32</span><span class=p>)</span>
-<span class=n>test_labels</span> <span class=o>=</span> <span class=n>one_hot</span><span class=p>(</span><span class=n>test_labels</span><span class=p>,</span> <span class=n>num_labels</span><span class=p>)</span>
-</code></pre></div><p>Now we need to construct a data_stream which will generate our batch data, this data stream will shuffle the training dataset. First let&rsquo;s define the batch size and how many batches should be used for going through all the data.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>batch_size</span> <span class=o>=</span> <span class=mi>128</span>
-<span class=n>num_train</span> <span class=o>=</span> <span class=n>train_images</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
-<span class=n>num_complete_batches</span><span class=p>,</span> <span class=n>leftover</span> <span class=o>=</span> <span class=nb>divmod</span><span class=p>(</span><span class=n>num_train</span><span class=p>,</span> <span class=n>batch_size</span><span class=p>)</span>
-<span class=n>num_batches</span> <span class=o>=</span> <span class=n>num_complete_batches</span> <span class=o>+</span> <span class=nb>bool</span><span class=p>(</span><span class=n>leftover</span><span class=p>)</span>
-</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>data_stream</span><span class=p>():</span>
-  <span class=s2>&#34;&#34;&#34;Creates a data stream with a predifined batch size.
-</span><span class=s2>  &#34;&#34;&#34;</span>
-  <span class=n>rng</span> <span class=o>=</span> <span class=n>onp</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>RandomState</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
-  <span class=k>while</span> <span class=bp>True</span><span class=p>:</span>
-    <span class=n>perm</span> <span class=o>=</span> <span class=n>rng</span><span class=o>.</span><span class=n>permutation</span><span class=p>(</span><span class=n>num_train</span><span class=p>)</span>
-    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>num_batches</span><span class=p>):</span>
-      <span class=n>batch_idx</span> <span class=o>=</span> <span class=n>perm</span><span class=p>[</span><span class=n>i</span> <span class=o>*</span> <span class=n>batch_size</span><span class=p>:</span> <span class=p>(</span><span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=p>)</span><span class=o>*</span><span class=n>batch_size</span><span class=p>]</span>
-      <span class=k>yield</span> <span class=n>train_images</span><span class=p>[</span><span class=n>batch_idx</span><span class=p>],</span> <span class=n>train_labels</span><span class=p>[</span><span class=n>batch_idx</span><span class=p>]</span>
+<span style=color:#09f;font-style:italic># Full test set</span>
+test_images, test_labels <span style=color:#555>=</span> test_data[<span style=color:#c30>&#39;image&#39;</span>], test_data[<span style=color:#c30>&#39;label&#39;</span>]
+test_images <span style=color:#555>=</span> np<span style=color:#555>.</span>array(np<span style=color:#555>.</span>moveaxis(test_images, <span style=color:#555>-</span><span style=color:#f60>1</span>, <span style=color:#f60>1</span>), dtype<span style=color:#555>=</span>np<span style=color:#555>.</span>float32)
+test_labels <span style=color:#555>=</span> one_hot(test_labels, num_labels)
+</code></pre></div><p>Now we need to construct a data_stream which will generate our batch data, this data stream will shuffle the training dataset. First let&rsquo;s define the batch size and how many batches should be used for going through all the data.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>batch_size <span style=color:#555>=</span> <span style=color:#f60>128</span>
+num_train <span style=color:#555>=</span> train_images<span style=color:#555>.</span>shape[<span style=color:#f60>0</span>]
+num_complete_batches, leftover <span style=color:#555>=</span> <span style=color:#366>divmod</span>(num_train, batch_size)
+num_batches <span style=color:#555>=</span> num_complete_batches <span style=color:#555>+</span> <span style=color:#366>bool</span>(leftover)
+</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>data_stream</span>():
+  <span style=color:#c30>&#34;&#34;&#34;Creates a data stream with a predifined batch size.
+</span><span style=color:#c30>  &#34;&#34;&#34;</span>
+  rng <span style=color:#555>=</span> onp<span style=color:#555>.</span>random<span style=color:#555>.</span>RandomState(<span style=color:#f60>0</span>)
+  <span style=color:#069;font-weight:700>while</span> True:
+    perm <span style=color:#555>=</span> rng<span style=color:#555>.</span>permutation(num_train)
+    <span style=color:#069;font-weight:700>for</span> i <span style=color:#000;font-weight:700>in</span> <span style=color:#366>range</span>(num_batches):
+      batch_idx <span style=color:#555>=</span> perm[i <span style=color:#555>*</span> batch_size: (i <span style=color:#555>+</span> <span style=color:#f60>1</span>)<span style=color:#555>*</span>batch_size]
+      <span style=color:#069;font-weight:700>yield</span> train_images[batch_idx], train_labels[batch_idx]
 
-<span class=n>batches</span> <span class=o>=</span> <span class=n>data_stream</span><span class=p>()</span>
-</code></pre></div><p>Now let&rsquo;s construct our network, we will contruct a simple convolutional neural network with 4 convoclutional blocks with batchnorm and relu and a dense softmax as output of the neural network.</p><p>First you define your neural network using <code>stax.serial</code> and get the init_fun and conv_net, the former is the initialization function of the network and the latter is your neural network which we will use on the update function.</p><p>After defining our network, we initialize it using the init function and we get our network parameters which we will optimize.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax.experimental</span> <span class=kn>import</span> <span class=n>stax</span>
-<span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>random</span>
-<span class=kn>from</span> <span class=nn>jax.experimental.stax</span> <span class=kn>import</span> <span class=p>(</span><span class=n>BatchNorm</span><span class=p>,</span> <span class=n>Conv</span><span class=p>,</span> <span class=n>Dense</span><span class=p>,</span> <span class=n>Flatten</span><span class=p>,</span>
-                                   <span class=n>Relu</span><span class=p>,</span> <span class=n>LogSoftmax</span><span class=p>)</span>
+batches <span style=color:#555>=</span> data_stream()
+</code></pre></div><p>Now let&rsquo;s construct our network, we will contruct a simple convolutional neural network with 4 convoclutional blocks with batchnorm and relu and a dense softmax as output of the neural network.</p><p>First you define your neural network using <code>stax.serial</code> and get the init_fun and conv_net, the former is the initialization function of the network and the latter is your neural network which we will use on the update function.</p><p>After defining our network, we initialize it using the init function and we get our network parameters which we will optimize.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax.experimental</span> <span style=color:#069;font-weight:700>import</span> stax
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> random
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax.experimental.stax</span> <span style=color:#069;font-weight:700>import</span> (BatchNorm, Conv, Dense, Flatten,
+                                   Relu, LogSoftmax)
 
-<span class=n>init_fun</span><span class=p>,</span> <span class=n>conv_net</span> <span class=o>=</span> <span class=n>stax</span><span class=o>.</span><span class=n>serial</span><span class=p>(</span><span class=n>Conv</span><span class=p>(</span><span class=mi>32</span><span class=p>,</span> <span class=p>(</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>),</span> <span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>padding</span><span class=o>=</span><span class=s2>&#34;SAME&#34;</span><span class=p>),</span>
-                                 <span class=n>BatchNorm</span><span class=p>(),</span> <span class=n>Relu</span><span class=p>,</span>
-                                 <span class=n>Conv</span><span class=p>(</span><span class=mi>32</span><span class=p>,</span> <span class=p>(</span><span class=mi>5</span><span class=p>,</span> <span class=mi>5</span><span class=p>),</span> <span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>padding</span><span class=o>=</span><span class=s2>&#34;SAME&#34;</span><span class=p>),</span>
-                                 <span class=n>BatchNorm</span><span class=p>(),</span> <span class=n>Relu</span><span class=p>,</span>
-                                 <span class=n>Conv</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>3</span><span class=p>),</span> <span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>padding</span><span class=o>=</span><span class=s2>&#34;SAME&#34;</span><span class=p>),</span>
-                                 <span class=n>BatchNorm</span><span class=p>(),</span> <span class=n>Relu</span><span class=p>,</span>
-                                 <span class=n>Conv</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>3</span><span class=p>),</span> <span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>2</span><span class=p>),</span> <span class=n>padding</span><span class=o>=</span><span class=s2>&#34;SAME&#34;</span><span class=p>),</span> <span class=n>Relu</span><span class=p>,</span>
-                                 <span class=n>Flatten</span><span class=p>,</span>
-                                 <span class=n>Dense</span><span class=p>(</span><span class=n>num_labels</span><span class=p>),</span>
-                                 <span class=n>LogSoftmax</span><span class=p>)</span>
+init_fun, conv_net <span style=color:#555>=</span> stax<span style=color:#555>.</span>serial(Conv(<span style=color:#f60>32</span>, (<span style=color:#f60>5</span>, <span style=color:#f60>5</span>), (<span style=color:#f60>2</span>, <span style=color:#f60>2</span>), padding<span style=color:#555>=</span><span style=color:#c30>&#34;SAME&#34;</span>),
+                                 BatchNorm(), Relu,
+                                 Conv(<span style=color:#f60>32</span>, (<span style=color:#f60>5</span>, <span style=color:#f60>5</span>), (<span style=color:#f60>2</span>, <span style=color:#f60>2</span>), padding<span style=color:#555>=</span><span style=color:#c30>&#34;SAME&#34;</span>),
+                                 BatchNorm(), Relu,
+                                 Conv(<span style=color:#f60>10</span>, (<span style=color:#f60>3</span>, <span style=color:#f60>3</span>), (<span style=color:#f60>2</span>, <span style=color:#f60>2</span>), padding<span style=color:#555>=</span><span style=color:#c30>&#34;SAME&#34;</span>),
+                                 BatchNorm(), Relu,
+                                 Conv(<span style=color:#f60>10</span>, (<span style=color:#f60>3</span>, <span style=color:#f60>3</span>), (<span style=color:#f60>2</span>, <span style=color:#f60>2</span>), padding<span style=color:#555>=</span><span style=color:#c30>&#34;SAME&#34;</span>), Relu,
+                                 Flatten,
+                                 Dense(num_labels),
+                                 LogSoftmax)
 
 
-<span class=n>key</span> <span class=o>=</span> <span class=n>random</span><span class=o>.</span><span class=n>PRNGKey</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
-<span class=n>_</span><span class=p>,</span> <span class=n>params</span> <span class=o>=</span> <span class=n>init_fun</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>,)</span> <span class=o>+</span> <span class=n>train_images</span><span class=o>.</span><span class=n>shape</span><span class=p>[</span><span class=mi>1</span><span class=p>:])</span> <span class=c1># -1 for varying batch size</span>
-</code></pre></div><p>Now let&rsquo;s define the accuracy and the loss function.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>accuracy</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>batch</span><span class=p>):</span>
-  <span class=s2>&#34;&#34;&#34; Calculates the accuracy in a batch.
-</span><span class=s2>
-</span><span class=s2>  Args:
-</span><span class=s2>    params : Neural network parameters.
-</span><span class=s2>    batch : Batch consisting of images and labels.
-</span><span class=s2>  
-</span><span class=s2>  Outputs:
-</span><span class=s2>    (float) : Mean value of the accuracy.
-</span><span class=s2>  &#34;&#34;&#34;</span>
+key <span style=color:#555>=</span> random<span style=color:#555>.</span>PRNGKey(<span style=color:#f60>0</span>)
+_, params <span style=color:#555>=</span> init_fun(key, (<span style=color:#555>-</span><span style=color:#f60>1</span>,) <span style=color:#555>+</span> train_images<span style=color:#555>.</span>shape[<span style=color:#f60>1</span>:]) <span style=color:#09f;font-style:italic># -1 for varying batch size</span>
+</code></pre></div><p>Now let&rsquo;s define the accuracy and the loss function.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>accuracy</span>(params, batch):
+  <span style=color:#c30>&#34;&#34;&#34; Calculates the accuracy in a batch.
+</span><span style=color:#c30>
+</span><span style=color:#c30>  Args:
+</span><span style=color:#c30>    params : Neural network parameters.
+</span><span style=color:#c30>    batch : Batch consisting of images and labels.
+</span><span style=color:#c30>  
+</span><span style=color:#c30>  Outputs:
+</span><span style=color:#c30>    (float) : Mean value of the accuracy.
+</span><span style=color:#c30>  &#34;&#34;&#34;</span>
 
-  <span class=c1># Unpack the input and targets</span>
-  <span class=n>inputs</span><span class=p>,</span> <span class=n>targets</span> <span class=o>=</span> <span class=n>batch</span>
+  <span style=color:#09f;font-style:italic># Unpack the input and targets</span>
+  inputs, targets <span style=color:#555>=</span> batch
   
-  <span class=c1># Get the label of the one-hot encoded target</span>
-  <span class=n>target_class</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>argmax</span><span class=p>(</span><span class=n>targets</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+  <span style=color:#09f;font-style:italic># Get the label of the one-hot encoded target</span>
+  target_class <span style=color:#555>=</span> np<span style=color:#555>.</span>argmax(targets, axis<span style=color:#555>=</span><span style=color:#f60>1</span>)
   
-  <span class=c1># Predict the class of the batch of images using </span>
-  <span class=c1># the conv_net defined before</span>
-  <span class=n>predicted_class</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>argmax</span><span class=p>(</span><span class=n>conv_net</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>inputs</span><span class=p>),</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+  <span style=color:#09f;font-style:italic># Predict the class of the batch of images using </span>
+  <span style=color:#09f;font-style:italic># the conv_net defined before</span>
+  predicted_class <span style=color:#555>=</span> np<span style=color:#555>.</span>argmax(conv_net(params, inputs), axis<span style=color:#555>=</span><span style=color:#f60>1</span>)
 
-  <span class=k>return</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>predicted_class</span> <span class=o>==</span> <span class=n>target_class</span><span class=p>)</span>
-</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=k>def</span> <span class=nf>loss</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>batch</span><span class=p>):</span>
-  <span class=s2>&#34;&#34;&#34; Cross entropy loss.
-</span><span class=s2>  Args:
-</span><span class=s2>    params : Neural network parameters.
-</span><span class=s2>    batch : Batch consisting of images and labels.
-</span><span class=s2>  
-</span><span class=s2>  Outputs:
-</span><span class=s2>    (float) : Sum of the cross entropy loss over the batch.
-</span><span class=s2>  &#34;&#34;&#34;</span>
-  <span class=c1># Unpack the input and targets</span>
-  <span class=n>images</span><span class=p>,</span> <span class=n>targets</span> <span class=o>=</span> <span class=n>batch</span>
-  <span class=c1># precdict the class using the neural network</span>
-  <span class=n>preds</span> <span class=o>=</span> <span class=n>conv_net</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>images</span><span class=p>)</span>
+  <span style=color:#069;font-weight:700>return</span> np<span style=color:#555>.</span>mean(predicted_class <span style=color:#555>==</span> target_class)
+</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>loss</span>(params, batch):
+  <span style=color:#c30>&#34;&#34;&#34; Cross entropy loss.
+</span><span style=color:#c30>  Args:
+</span><span style=color:#c30>    params : Neural network parameters.
+</span><span style=color:#c30>    batch : Batch consisting of images and labels.
+</span><span style=color:#c30>  
+</span><span style=color:#c30>  Outputs:
+</span><span style=color:#c30>    (float) : Sum of the cross entropy loss over the batch.
+</span><span style=color:#c30>  &#34;&#34;&#34;</span>
+  <span style=color:#09f;font-style:italic># Unpack the input and targets</span>
+  images, targets <span style=color:#555>=</span> batch
+  <span style=color:#09f;font-style:italic># precdict the class using the neural network</span>
+  preds <span style=color:#555>=</span> conv_net(params, images)
 
-  <span class=k>return</span> <span class=o>-</span><span class=n>np</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>preds</span> <span class=o>*</span> <span class=n>targets</span><span class=p>)</span>
-</code></pre></div><p>Let&rsquo;s define which optimizer we shall use for training our neural network. Here we shall select the adam optimizer and initialize the optimizer with our neural network parameters.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax.experimental</span> <span class=kn>import</span> <span class=n>optimizers</span>
+  <span style=color:#069;font-weight:700>return</span> <span style=color:#555>-</span>np<span style=color:#555>.</span>sum(preds <span style=color:#555>*</span> targets)
+</code></pre></div><p>Let&rsquo;s define which optimizer we shall use for training our neural network. Here we shall select the adam optimizer and initialize the optimizer with our neural network parameters.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax.experimental</span> <span style=color:#069;font-weight:700>import</span> optimizers
 
-<span class=n>step_size</span> <span class=o>=</span> <span class=mf>1e-3</span>
-<span class=n>opt_init</span><span class=p>,</span> <span class=n>opt_update</span><span class=p>,</span> <span class=n>get_params</span> <span class=o>=</span> <span class=n>optimizers</span><span class=o>.</span><span class=n>adam</span><span class=p>(</span><span class=n>step_size</span><span class=p>)</span>
-<span class=n>opt_state</span> <span class=o>=</span> <span class=n>opt_init</span><span class=p>(</span><span class=n>params</span><span class=p>)</span>
-</code></pre></div><p>In order to create our update function for the network, we shall use the <code>jit</code> decorator to make things faster.</p><p>Inside the update function we take the value and gradient of the loss function given for the given parameters and the dataset and update our parameters using the optimizer.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>jax</span> <span class=kn>import</span> <span class=n>jit</span><span class=p>,</span> <span class=n>value_and_grad</span>
+step_size <span style=color:#555>=</span> <span style=color:#f60>1e-3</span>
+opt_init, opt_update, get_params <span style=color:#555>=</span> optimizers<span style=color:#555>.</span>adam(step_size)
+opt_state <span style=color:#555>=</span> opt_init(params)
+</code></pre></div><p>In order to create our update function for the network, we shall use the <code>jit</code> decorator to make things faster.</p><p>Inside the update function we take the value and gradient of the loss function given for the given parameters and the dataset and update our parameters using the optimizer.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>jax</span> <span style=color:#069;font-weight:700>import</span> jit, value_and_grad
 
-<span class=nd>@jit</span>
-<span class=k>def</span> <span class=nf>update</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>opt_state</span><span class=p>):</span>
-    <span class=s2>&#34;&#34;&#34; Compute the gradient for a batch and update the parameters &#34;&#34;&#34;</span>
+<span style=color:#99f>@jit</span>
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>update</span>(params, x, y, opt_state):
+    <span style=color:#c30>&#34;&#34;&#34; Compute the gradient for a batch and update the parameters &#34;&#34;&#34;</span>
     
-    <span class=c1># Take the gradient and evaluate the loss function</span>
-    <span class=n>value</span><span class=p>,</span> <span class=n>grads</span> <span class=o>=</span> <span class=n>value_and_grad</span><span class=p>(</span><span class=n>loss</span><span class=p>)(</span><span class=n>params</span><span class=p>,</span> <span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>))</span>
+    <span style=color:#09f;font-style:italic># Take the gradient and evaluate the loss function</span>
+    value, grads <span style=color:#555>=</span> value_and_grad(loss)(params, (x, y))
     
-    <span class=c1># Update the network using the gradient taken</span>
-    <span class=n>opt_state</span> <span class=o>=</span> <span class=n>opt_update</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>grads</span><span class=p>,</span> <span class=n>opt_state</span><span class=p>)</span>
+    <span style=color:#09f;font-style:italic># Update the network using the gradient taken</span>
+    opt_state <span style=color:#555>=</span> opt_update(<span style=color:#f60>0</span>, grads, opt_state)
     
-    <span class=k>return</span> <span class=n>get_params</span><span class=p>(</span><span class=n>opt_state</span><span class=p>),</span> <span class=n>opt_state</span><span class=p>,</span> <span class=n>value</span>
-</code></pre></div><p>Now we shall create a training loop for the neural network, we run the loop for a number of epochs and run on all data using the data_stream that we defined before.</p><p>Then we record the loss and accuracy for each epoch.</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=kn>from</span> <span class=nn>tqdm.notebook</span> <span class=kn>import</span> <span class=n>tqdm</span>
-<span class=n>train_acc</span><span class=p>,</span> <span class=n>test_acc</span> <span class=o>=</span> <span class=p>[],</span> <span class=p>[]</span>
-<span class=n>train_loss</span><span class=p>,</span> <span class=n>val_loss</span> <span class=o>=</span> <span class=p>[],</span> <span class=p>[]</span>
+    <span style=color:#069;font-weight:700>return</span> get_params(opt_state), opt_state, value
+</code></pre></div><p>Now we shall create a training loop for the neural network, we run the loop for a number of epochs and run on all data using the data_stream that we defined before.</p><p>Then we record the loss and accuracy for each epoch.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>tqdm.notebook</span> <span style=color:#069;font-weight:700>import</span> tqdm
+train_acc, test_acc <span style=color:#555>=</span> [], []
+train_loss, val_loss <span style=color:#555>=</span> [], []
 
 
-<span class=n>num_epochs</span> <span class=o>=</span> <span class=mi>10</span>
+num_epochs <span style=color:#555>=</span> <span style=color:#f60>10</span>
 
-<span class=k>for</span> <span class=n>epoch</span> <span class=ow>in</span> <span class=n>tqdm</span><span class=p>(</span><span class=nb>range</span><span class=p>(</span><span class=n>num_epochs</span><span class=p>)):</span> 
-  <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>num_batches</span><span class=p>):</span>
-    <span class=n>x</span><span class=p>,</span> <span class=n>y</span> <span class=o>=</span> <span class=nb>next</span><span class=p>(</span><span class=n>batches</span><span class=p>)</span>    
-    <span class=n>params</span><span class=p>,</span> <span class=n>opt_state</span><span class=p>,</span> <span class=n>_loss</span> <span class=o>=</span> <span class=n>update</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>,</span> <span class=n>opt_state</span><span class=p>)</span>
+<span style=color:#069;font-weight:700>for</span> epoch <span style=color:#000;font-weight:700>in</span> tqdm(<span style=color:#366>range</span>(num_epochs)): 
+  <span style=color:#069;font-weight:700>for</span> _ <span style=color:#000;font-weight:700>in</span> <span style=color:#366>range</span>(num_batches):
+    x, y <span style=color:#555>=</span> <span style=color:#366>next</span>(batches)    
+    params, opt_state, _loss <span style=color:#555>=</span> update(params, x, y, opt_state)
     
 
-  <span class=c1># Update parameters of the Network</span>
-  <span class=n>params</span> <span class=o>=</span> <span class=n>get_params</span><span class=p>(</span><span class=n>opt_state</span><span class=p>)</span>
+  <span style=color:#09f;font-style:italic># Update parameters of the Network</span>
+  params <span style=color:#555>=</span> get_params(opt_state)
 
-  <span class=n>train_loss</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>loss</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=p>(</span><span class=n>train_images</span><span class=p>,</span> <span class=n>train_labels</span><span class=p>)))</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>train_images</span><span class=p>))</span>
-  <span class=n>val_loss</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>loss</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=p>(</span><span class=n>test_images</span><span class=p>,</span> <span class=n>test_labels</span><span class=p>))</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>test_images</span><span class=p>))</span>
+  train_loss<span style=color:#555>.</span>append(np<span style=color:#555>.</span>mean(loss(params, (train_images, train_labels)))<span style=color:#555>/</span><span style=color:#366>len</span>(train_images))
+  val_loss<span style=color:#555>.</span>append(loss(params, (test_images, test_labels))<span style=color:#555>/</span><span style=color:#366>len</span>(test_images))
 
-  <span class=n>train_acc_epoch</span> <span class=o>=</span> <span class=n>accuracy</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=p>(</span><span class=n>train_images</span><span class=p>,</span> <span class=n>train_labels</span><span class=p>))</span>
-  <span class=n>test_acc_epoch</span> <span class=o>=</span> <span class=n>accuracy</span><span class=p>(</span><span class=n>params</span><span class=p>,</span> <span class=p>(</span><span class=n>test_images</span><span class=p>,</span> <span class=n>test_labels</span><span class=p>))</span>
+  train_acc_epoch <span style=color:#555>=</span> accuracy(params, (train_images, train_labels))
+  test_acc_epoch <span style=color:#555>=</span> accuracy(params, (test_images, test_labels))
   
-  <span class=n>train_acc</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>train_acc_epoch</span><span class=p>)</span>
-  <span class=n>test_acc</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>test_acc_epoch</span><span class=p>)</span>
-</code></pre></div><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=n>epochs</span> <span class=o>=</span> <span class=nb>range</span><span class=p>(</span><span class=n>num_epochs</span><span class=p>)</span>
+  train_acc<span style=color:#555>.</span>append(train_acc_epoch)
+  test_acc<span style=color:#555>.</span>append(test_acc_epoch)
+</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>epochs <span style=color:#555>=</span> <span style=color:#366>range</span>(num_epochs)
 
-<span class=n>fig</span> <span class=o>=</span> <span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>12</span><span class=p>,</span><span class=mi>6</span><span class=p>))</span>
-<span class=n>gs</span> <span class=o>=</span> <span class=n>fig</span><span class=o>.</span><span class=n>add_gridspec</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
-<span class=n>ax1</span> <span class=o>=</span> <span class=n>fig</span><span class=o>.</span><span class=n>add_subplot</span><span class=p>(</span><span class=n>gs</span><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>])</span>
-<span class=n>ax2</span> <span class=o>=</span> <span class=n>fig</span><span class=o>.</span><span class=n>add_subplot</span><span class=p>(</span><span class=n>gs</span><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>])</span>
+fig <span style=color:#555>=</span> plt<span style=color:#555>.</span>figure(figsize<span style=color:#555>=</span>(<span style=color:#f60>12</span>,<span style=color:#f60>6</span>))
+gs <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_gridspec(<span style=color:#f60>1</span>, <span style=color:#f60>2</span>)
+ax1 <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_subplot(gs[<span style=color:#f60>0</span>, <span style=color:#f60>0</span>])
+ax2 <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_subplot(gs[<span style=color:#f60>0</span>, <span style=color:#f60>1</span>])
 
-<span class=n>ax1</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>epochs</span><span class=p>,</span> <span class=n>train_loss</span><span class=p>,</span> <span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;Training&#39;</span><span class=p>)</span>
-<span class=n>ax1</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>epochs</span><span class=p>,</span> <span class=n>val_loss</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;Validation&#39;</span><span class=p>)</span>
-<span class=n>ax1</span><span class=o>.</span><span class=n>set_xlabel</span><span class=p>(</span><span class=s1>&#39;Epochs&#39;</span><span class=p>,</span> <span class=n>size</span><span class=o>=</span><span class=mi>16</span><span class=p>)</span>
-<span class=n>ax1</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;Loss&#39;</span><span class=p>,</span> <span class=n>size</span><span class=o>=</span><span class=mi>16</span><span class=p>)</span>
-<span class=n>ax1</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+ax1<span style=color:#555>.</span>plot(epochs, train_loss, <span style=color:#c30>&#39;r&#39;</span>, label<span style=color:#555>=</span><span style=color:#c30>&#39;Training&#39;</span>)
+ax1<span style=color:#555>.</span>plot(epochs, val_loss, <span style=color:#c30>&#39;b&#39;</span>, label<span style=color:#555>=</span><span style=color:#c30>&#39;Validation&#39;</span>)
+ax1<span style=color:#555>.</span>set_xlabel(<span style=color:#c30>&#39;Epochs&#39;</span>, size<span style=color:#555>=</span><span style=color:#f60>16</span>)
+ax1<span style=color:#555>.</span>set_ylabel(<span style=color:#c30>&#39;Loss&#39;</span>, size<span style=color:#555>=</span><span style=color:#f60>16</span>)
+ax1<span style=color:#555>.</span>legend()
 
-<span class=n>ax2</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>epochs</span><span class=p>,</span> <span class=n>train_acc</span><span class=p>,</span> <span class=s1>&#39;r&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;Training&#39;</span><span class=p>)</span>
-<span class=n>ax2</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>epochs</span><span class=p>,</span> <span class=n>test_acc</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;Validation&#39;</span><span class=p>)</span>
-<span class=n>ax2</span><span class=o>.</span><span class=n>set_xlabel</span><span class=p>(</span><span class=s1>&#39;Epochs&#39;</span><span class=p>,</span> <span class=n>size</span><span class=o>=</span><span class=mi>16</span><span class=p>)</span>
-<span class=n>ax2</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;Accuracy&#39;</span><span class=p>,</span> <span class=n>size</span><span class=o>=</span><span class=mi>16</span><span class=p>)</span>
-<span class=n>ax2</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
-<span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+ax2<span style=color:#555>.</span>plot(epochs, train_acc, <span style=color:#c30>&#39;r&#39;</span>, label<span style=color:#555>=</span><span style=color:#c30>&#39;Training&#39;</span>)
+ax2<span style=color:#555>.</span>plot(epochs, test_acc, <span style=color:#c30>&#39;b&#39;</span>, label<span style=color:#555>=</span><span style=color:#c30>&#39;Validation&#39;</span>)
+ax2<span style=color:#555>.</span>set_xlabel(<span style=color:#c30>&#39;Epochs&#39;</span>, size<span style=color:#555>=</span><span style=color:#f60>16</span>)
+ax2<span style=color:#555>.</span>set_ylabel(<span style=color:#c30>&#39;Accuracy&#39;</span>, size<span style=color:#555>=</span><span style=color:#f60>16</span>)
+ax2<span style=color:#555>.</span>legend()
+plt<span style=color:#555>.</span>show()
 </code></pre></div><p><img src=/n-blog/figures/2020-09-25-NN-JAX_files/2020-09-25-NN-JAX_35_0.png alt=NNTrain></p><p>Now we have successfully created and trained a neural network using JAX!</p><hr><h1 id=references>References</h1><ul><li><p><a href=https://roberttlange.github.io/posts/2020/03/blog-post-10/>Robert Lang Blog</a></p></li><li><p><a href=https://jax.readthedocs.io/en/stable/notebooks/quickstart.html>JAX Quickstart</a></p></li><li><p><a href=https://github.com/google/jax/blob/master/docs/notebooks/neural_network_with_tfds_data.ipynb>Training a Simple Neural Network, with tensorflow/datasets Data Loading</a></p></li></ul></div><footer class="post-footer clearfix"><div class=share><a class=icon-twitter href="https://twitter.com/share?text=Creating%20a%20simple%20Neural%20Network%20in%20JAX&url=https%3a%2f%2fnahumsa.github.io%2fn-blog%2f2020-09-25-nn-jax%2f" onclick="return window.open(this.href,'twitter-share','width=550,height=235'),!1" aria-label="Share on Twitter"><i class="fa fa-twitter" aria-hidden=true></i></a></div></footer></article></div></div></div><footer class=footer><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-jump-top js-jump-top" href=# aria-label="Back to Top"><i class="fa fa-angle-up" aria-hidden=true></i></a></div><p class=footer-copyright><span>&copy; 2021 / Powered by <a href=https://gohugo.io/>Hugo</a></span></p><p class=footer-copyright><span><a href=https://github.com/roryg/ghostwriter>Ghostwriter theme</a> By <a href=http://jollygoodthemes.com>JollyGoodThemes</a></span>
 <span>/ <a href=https://github.com/jbub/ghostwriter>Ported</a> to Hugo By <a href=https://github.com/jbub>jbub</a></span></p></div></footer><script src=https://nahumsa.github.io/n-blog/js/jquery-1.11.3.min.js></script><script src=https://nahumsa.github.io/n-blog/js/jquery.fitvids.js></script><script src=https://nahumsa.github.io/n-blog/js/scripts.js></script></body></html>
