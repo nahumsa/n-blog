@@ -1,5 +1,5 @@
 <!doctype html><html prefix="og: http://ogp.me/ns#"><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><title>Variational Quantum Classifier</title><meta name=description content="1) Introduction There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.
-Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.82.0"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Variational Quantum Classifier"><meta property="og:description" content="1) Introduction There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.
+Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.83.1"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="Variational Quantum Classifier"><meta property="og:description" content="1) Introduction There are several applications for quantum computers, one of the most promising applications is Quantum Machine Learning.
 Quantum Machine Learning is a novel field which aims to use Quantum Computer to do machine learning tasks, just as the name states. One of such tasks is the classification problem, where we aim to split the data into different classes. One example of a classification problem is when it is needed to classify if an email is a spam or not, the data would be the email content and we would train examples of spam mails and not spam mails in order to create a model of what a spam mail is and then use this model for novel data to solve our task."><meta property="og:type" content="article"><meta property="og:url" content="https://nahumsa.github.io/n-blog/2021-02-22-vqc/"><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/site.css><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous><link rel="shortcut icon" type=image/jpg href=https://nahumsa.github.io/n-blog/favicon.ico><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],processEscapes:!0,processEnvironments:!0},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}},window.addEventListener('load',a=>{document.querySelectorAll("mjx-container").forEach(function(a){a.parentElement.classList+='has-jax'})})</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script></head><body><script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-170504520-1','auto'),ga('send','pageview'))</script><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-social hint--top" data-hint=Twitter aria-label=Twitter href=https://twitter.com/sa_nahum rel=me><i class="fa fa-twitter" aria-hidden=true></i></a>
 <a class="button-square button-social hint--top" data-hint=Github aria-label=Github href=https://github.com/nahumsa rel=me><i class="fa fa-github-alt" aria-hidden=true></i></a>
 <a class="button-square button-social hint--top" data-hint=Email aria-label="Send an Email" href=mailto:nahumsa@cbpf.br><i class="fa fa-envelope" aria-hidden=true></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">Variational Quantum Classifier</h1><p class="post-date post-line"><span>Published <time datetime=2021-02-22 itemprop=datePublished>Mon, Feb 22, 2021</time></span>
@@ -11,192 +11,192 @@ $$</p><p>Here I will present two kinds of quantum embeddings:</p><ul><li>Basis E
 | \mathcal{D} \rangle = \frac{1}{\sqrt{M}} \sum_{m=1}^M | x^{(m)} \rangle
 $$</p><p>As an example we have $\mathcal{D} = \{ 00 ,11 \}$, we can encode this dataset as:</p><p>$$
 | \mathcal{D} \rangle = \frac{1}{2} \big[ |00 \rangle + | 11 \rangle \big]
-$$</p><p>This embedding can be done using the pennylane template <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.BasisEmbedding.html><code>BasisEmbedding</code></a>. Let&rsquo;s show one example:</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>import pennylane as qml
-import numpy as np
+$$</p><p>This embedding can be done using the pennylane template <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.BasisEmbedding.html><code>BasisEmbedding</code></a>. Let&rsquo;s show one example:</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>pennylane</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>qml</span>
+<span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>numpy</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>np</span>
 
-# Initialize the device
-n_qubits = 2
-dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+<span style=color:#09f;font-style:italic># Initialize the device</span>
+n_qubits <span style=color:#555>=</span> <span style=color:#f60>2</span>
+dev <span style=color:#555>=</span> qml<span style=color:#555>.</span>device(<span style=color:#c30>&#39;default.qubit&#39;</span>, wires<span style=color:#555>=</span>n_qubits)
 
-@qml.qnode(dev)
-def basis_embedding(data):
+<span style=color:#99f>@qml.qnode</span>(dev)
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>basis_embedding</span>(data):
     
-    # Embedding
-    qml.templates.BasisEmbedding(data, wires=range(n_qubits))
+    <span style=color:#09f;font-style:italic># Embedding</span>
+    qml<span style=color:#555>.</span>templates<span style=color:#555>.</span>BasisEmbedding(data, wires<span style=color:#555>=</span><span style=color:#366>range</span>(n_qubits))
 
-    return qml.state()
+    <span style=color:#069;font-weight:700>return</span> qml<span style=color:#555>.</span>state()
 
-features=np.array([0, 1])
+features<span style=color:#555>=</span>np<span style=color:#555>.</span>array([<span style=color:#f60>0</span>, <span style=color:#f60>1</span>])
 
-print(f&#34;Quantum State |01&gt;: {basis_embedding(features)}&#34;)
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;Quantum State |01&gt;: {basis_embedding(features)}&#34;</span>)
 
-features=np.array([1,0])
+features<span style=color:#555>=</span>np<span style=color:#555>.</span>array([<span style=color:#f60>1</span>,<span style=color:#f60>0</span>])
 
-print(f&#34;Quantum State |10&gt;: {basis_embedding(features)}&#34;)
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;Quantum State |10&gt;: {basis_embedding(features)}&#34;</span>)
 </code></pre></div><pre><code>Quantum State |01&gt;: [0.+0.j 1.+0.j 0.+0.j 0.+0.j]
 Quantum State |10&gt;: [0.+0.j 0.+0.j 1.+0.j 0.+0.j]
 </code></pre><p>As we can see in the code, the data is properly encoded into the computational basis. However, this is not a very efficient encoding, mainly because we want to encode continous data and this kind of encoding would be very inneficient to do this.</p><h3 id=212-amplitude-embedding>2.1.2) Amplitude Embedding</h3><p>In this encoding we will encode the data into amplitudes of a quantum state. Since all quantum states must be normalized, the first step is to normalize our entry data. Thus a normalized N dimensional datapoint x is represented by the amplitudes of the n-qubit quantum state $| \psi_x \rangle$:</p><p>$$
 | \psi_x \rangle = \sum_{i=1}^N x_i | i \rangle
 $$</p><p>Where $x_i$ is the i-th element of x and $| i \rangle$ is the i-th computational basis state.</p><p>For instance let&rsquo;s encode the datapoint $x = (0, 1, -4, 0)$ into a quantum state. First the normalized datapoint is $x_{\mathrm{norm}} = \frac{1}{\sqrt{4.123}} ( 0, 1, -4, 0)$, then we can encode into a quantum state:</p><p>$$
 | \psi_x \rangle = \frac{1}{\sqrt{4.123}} \bigg[ | 01 \rangle - | 10 \rangle \bigg]
-$$</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AmplitudeEmbedding.html><code>AmplitudeEmbedding</code></a>, which encodes a vector of lenght $2^n$ into n qubits.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback># Initialize the device
-n_qubits = 2
-dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+$$</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AmplitudeEmbedding.html><code>AmplitudeEmbedding</code></a>, which encodes a vector of lenght $2^n$ into n qubits.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#09f;font-style:italic># Initialize the device</span>
+n_qubits <span style=color:#555>=</span> <span style=color:#f60>2</span>
+dev <span style=color:#555>=</span> qml<span style=color:#555>.</span>device(<span style=color:#c30>&#39;default.qubit&#39;</span>, wires<span style=color:#555>=</span>n_qubits)
 
-@qml.qnode(dev)
-def basis_embedding(data):
+<span style=color:#99f>@qml.qnode</span>(dev)
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>basis_embedding</span>(data):
     
-    # Embedding
-    # This will normalize the data for us
-    qml.templates.AmplitudeEmbedding(data, wires=range(n_qubits), normalize=True)
+    <span style=color:#09f;font-style:italic># Embedding</span>
+    <span style=color:#09f;font-style:italic># This will normalize the data for us</span>
+    qml<span style=color:#555>.</span>templates<span style=color:#555>.</span>AmplitudeEmbedding(data, wires<span style=color:#555>=</span><span style=color:#366>range</span>(n_qubits), normalize<span style=color:#555>=</span>True)
 
-    return qml.state()
+    <span style=color:#069;font-weight:700>return</span> qml<span style=color:#555>.</span>state()
 
-x = np.array([0., 1., 4., 0.])
-x_norm = x/np.linalg.norm(x)
-print(f&#34;Normalized datapoint: {x_norm}&#34;)
-print(f&#34;Quantum State: {basis_embedding(x)}&#34;)
+x <span style=color:#555>=</span> np<span style=color:#555>.</span>array([<span style=color:#f60>0.</span>, <span style=color:#f60>1.</span>, <span style=color:#f60>4.</span>, <span style=color:#f60>0.</span>])
+x_norm <span style=color:#555>=</span> x<span style=color:#555>/</span>np<span style=color:#555>.</span>linalg<span style=color:#555>.</span>norm(x)
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;Normalized datapoint: {x_norm}&#34;</span>)
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;Quantum State: {basis_embedding(x)}&#34;</span>)
 </code></pre></div><pre><code>Normalized datapoint: [0.         0.24253563 0.9701425  0.        ]
 Quantum State: [0.        +0.j 0.24253563+0.j 0.9701425 +0.j 0.        +0.j]
 </code></pre><h3 id=213-angle-embedding>2.1.3) Angle Embedding</h3><p>Another approach is to encode data into qubit rotations, this has the downside of needing n qubits for n-dimensional datapoint, but has the upside of being more easy to implement.</p><p>A N-dimensional datapoint $x$ will be represented by N qubits of the form:</p><p>$$
 | \psi_x \rangle = \bigotimes_{i=1}^{N} R_j(x_i) | 0 \rangle
-$$</p><p>Where $R_j$ is the rotation on the j-th axis and i can be around the X,Y and Z axis, the $\bigotimes$ symbol representes that each rotation is independent from each other and act only on one qubit.</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AngleEmbedding.html><code>AngleEmbedding</code></a>.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback># Initialize the device
-n_qubits = 2
-dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+$$</p><p>Where $R_j$ is the rotation on the j-th axis and i can be around the X,Y and Z axis, the $\bigotimes$ symbol representes that each rotation is independent from each other and act only on one qubit.</p><p>This can be done in pennylane using <a href=https://pennylane.readthedocs.io/en/stable/code/api/pennylane.templates.embeddings.AngleEmbedding.html><code>AngleEmbedding</code></a>.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#09f;font-style:italic># Initialize the device</span>
+n_qubits <span style=color:#555>=</span> <span style=color:#f60>2</span>
+dev <span style=color:#555>=</span> qml<span style=color:#555>.</span>device(<span style=color:#c30>&#39;default.qubit&#39;</span>, wires<span style=color:#555>=</span>n_qubits)
 
-@qml.qnode(dev)
-def basis_embedding(data):
+<span style=color:#99f>@qml.qnode</span>(dev)
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>basis_embedding</span>(data):
     
-    # Embedding
-    # This will normalize the data for us
-    qml.templates.AngleEmbedding(data, wires=range(n_qubits))
+    <span style=color:#09f;font-style:italic># Embedding</span>
+    <span style=color:#09f;font-style:italic># This will normalize the data for us</span>
+    qml<span style=color:#555>.</span>templates<span style=color:#555>.</span>AngleEmbedding(data, wires<span style=color:#555>=</span><span style=color:#366>range</span>(n_qubits))
 
-    return qml.state()
+    <span style=color:#069;font-weight:700>return</span> qml<span style=color:#555>.</span>state()
 
-x = np.array([.5, 1.2])
+x <span style=color:#555>=</span> np<span style=color:#555>.</span>array([<span style=color:#555>.</span><span style=color:#f60>5</span>, <span style=color:#f60>1.2</span>])
 
-print(f&#34;Quantum State: {basis_embedding(x)}\n&#34;)
-print(basis_embedding.draw())
+<span style=color:#069;font-weight:700>print</span>(f<span style=color:#c30>&#34;Quantum State: {basis_embedding(x)}</span><span style=color:#c30;font-weight:700>\n</span><span style=color:#c30>&#34;</span>)
+<span style=color:#069;font-weight:700>print</span>(basis_embedding<span style=color:#555>.</span>draw())
 </code></pre></div><pre><code>Quantum State: [ 0.79967793+0.j          0.        -0.54708911j  0.        -0.2041913j
  -0.13969478+0.j        ]
 
  0: ──RX(0.5)──╭┤ State 
  1: ──RX(1.2)──╰┤ State 
-</code></pre><h2 id=22-variational-circuit>2.2) Variational Circuit</h2><p>After encoding the data we need to create our proper Quantum Neural Network which will consist of a parametrized quantum circuit. The construction of this circuit can be done in plethora of ways which can be seen in the pennylane <a href=https://pennylane.readthedocs.io/en/stable/introduction/templates.html>layers templates page</a>, for instance.</p><p>The main idea is to construct a parametrized unitary $U(\theta)$ which we will tune the parameters in order to tell us from which class the data belongs.</p><h2 id=23-loss-function>2.3) Loss Function</h2><p>The loss function is the function that we want to minimize in order to solve the task that we want. There are several loss functions that can be used and will further explained in future posts.</p><h1 id=3-using-vqc-for-the-iris-dataset>3) Using VQC for the iris dataset</h1><p>Now I will implement the Variational Quantum Classifier for the famous <a href=https://archive.ics.uci.edu/ml/datasets/iris>Iris dataset</a>. The goal for this dataset is to classify the class of iris plant using attributes of the plant.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>import sys
-import pennylane as qml
-import numpy as np
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from tqdm import tqdm
-</code></pre></div><h2 id=31-loading-the-dataset>3.1) Loading the dataset</h2><p>We load the Iris dataset from sklearn datasets and split into a training and validation split as usual..</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>iris = datasets.load_iris()
-X = iris.data[:, :]
-Y = iris.target
+</code></pre><h2 id=22-variational-circuit>2.2) Variational Circuit</h2><p>After encoding the data we need to create our proper Quantum Neural Network which will consist of a parametrized quantum circuit. The construction of this circuit can be done in plethora of ways which can be seen in the pennylane <a href=https://pennylane.readthedocs.io/en/stable/introduction/templates.html>layers templates page</a>, for instance.</p><p>The main idea is to construct a parametrized unitary $U(\theta)$ which we will tune the parameters in order to tell us from which class the data belongs.</p><h2 id=23-loss-function>2.3) Loss Function</h2><p>The loss function is the function that we want to minimize in order to solve the task that we want. There are several loss functions that can be used and will further explained in future posts.</p><h1 id=3-using-vqc-for-the-iris-dataset>3) Using VQC for the iris dataset</h1><p>Now I will implement the Variational Quantum Classifier for the famous <a href=https://archive.ics.uci.edu/ml/datasets/iris>Iris dataset</a>. The goal for this dataset is to classify the class of iris plant using attributes of the plant.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>sys</span>
+<span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>pennylane</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>qml</span>
+<span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>numpy</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>np</span>
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>sklearn</span> <span style=color:#069;font-weight:700>import</span> datasets
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>sklearn.model_selection</span> <span style=color:#069;font-weight:700>import</span> train_test_split
+<span style=color:#069;font-weight:700>from</span> <span style=color:#0cf;font-weight:700>tqdm</span> <span style=color:#069;font-weight:700>import</span> tqdm
+</code></pre></div><h2 id=31-loading-the-dataset>3.1) Loading the dataset</h2><p>We load the Iris dataset from sklearn datasets and split into a training and validation split as usual..</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>iris <span style=color:#555>=</span> datasets<span style=color:#555>.</span>load_iris()
+X <span style=color:#555>=</span> iris<span style=color:#555>.</span>data[:, :]
+Y <span style=color:#555>=</span> iris<span style=color:#555>.</span>target
 
-X_train, X_valid, Y_train, Y_valid = train_test_split(X, Y, test_size=0.25, random_state=42)
-</code></pre></div><h2 id=32-constructing-the-variational-circuit>3.2) Constructing the Variational Circuit</h2><p>In order to construct the variational circuit, we need three steps:</p><ul><li>Embed the data into a quantum state: Which II use the angle embedding;</li><li>Create a Parametetrized Quantum Circuit (PQC): Which I will use the Strongly Entangling Layers Template;</li><li>Measure the qubits: Since we are classifying three classes, I will measure all three qubits using the expectation Z value on each one.</li></ul><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>n_qubits = X_train.shape[1]
-dev = qml.device(&#39;default.qubit&#39;, wires=n_qubits)
+X_train, X_valid, Y_train, Y_valid <span style=color:#555>=</span> train_test_split(X, Y, test_size<span style=color:#555>=</span><span style=color:#f60>0.25</span>, random_state<span style=color:#555>=</span><span style=color:#f60>42</span>)
+</code></pre></div><h2 id=32-constructing-the-variational-circuit>3.2) Constructing the Variational Circuit</h2><p>In order to construct the variational circuit, we need three steps:</p><ul><li>Embed the data into a quantum state: Which II use the angle embedding;</li><li>Create a Parametetrized Quantum Circuit (PQC): Which I will use the Strongly Entangling Layers Template;</li><li>Measure the qubits: Since we are classifying three classes, I will measure all three qubits using the expectation Z value on each one.</li></ul><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>n_qubits <span style=color:#555>=</span> X_train<span style=color:#555>.</span>shape[<span style=color:#f60>1</span>]
+dev <span style=color:#555>=</span> qml<span style=color:#555>.</span>device(<span style=color:#c30>&#39;default.qubit&#39;</span>, wires<span style=color:#555>=</span>n_qubits)
 
-@qml.qnode(dev)
-def circuit(weights, data):
-    # Embedding
-    qml.templates.AngleEmbedding(data, wires=range(n_qubits))
+<span style=color:#99f>@qml.qnode</span>(dev)
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>circuit</span>(weights, data):
+    <span style=color:#09f;font-style:italic># Embedding</span>
+    qml<span style=color:#555>.</span>templates<span style=color:#555>.</span>AngleEmbedding(data, wires<span style=color:#555>=</span><span style=color:#366>range</span>(n_qubits))
     
-    # Create Parametrized layer
-    qml.templates.StronglyEntanglingLayers(weights, wires=range(n_qubits))
+    <span style=color:#09f;font-style:italic># Create Parametrized layer</span>
+    qml<span style=color:#555>.</span>templates<span style=color:#555>.</span>StronglyEntanglingLayers(weights, wires<span style=color:#555>=</span><span style=color:#366>range</span>(n_qubits))
 
-    return [qml.expval(qml.PauliZ(0)) ,qml.expval(qml.PauliZ(1)), qml.expval(qml.PauliZ(2))]
-</code></pre></div><h2 id=32-defining-the-cost-function>3.2) Defining the cost function</h2><p>In order to use the mean squared error loss function it is need to one hot encode each label into a vector and then use each expectation value from the circuit to approximate each class.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>def cost(weights, x, y):
-    &#34;&#34;&#34; Define the cost function for the classification task.
-    &#34;&#34;&#34;
-    epoch_loss = []
-    label2vec = {
-        0: [1, 0, 0],
-        1: [0, 1, 0],
-        2: [0, 0, 1]
+    <span style=color:#069;font-weight:700>return</span> [qml<span style=color:#555>.</span>expval(qml<span style=color:#555>.</span>PauliZ(<span style=color:#f60>0</span>)) ,qml<span style=color:#555>.</span>expval(qml<span style=color:#555>.</span>PauliZ(<span style=color:#f60>1</span>)), qml<span style=color:#555>.</span>expval(qml<span style=color:#555>.</span>PauliZ(<span style=color:#f60>2</span>))]
+</code></pre></div><h2 id=32-defining-the-cost-function>3.2) Defining the cost function</h2><p>In order to use the mean squared error loss function it is need to one hot encode each label into a vector and then use each expectation value from the circuit to approximate each class.</p><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>cost</span>(weights, x, y):
+    <span style=color:#c30>&#34;&#34;&#34; Define the cost function for the classification task.
+</span><span style=color:#c30>    &#34;&#34;&#34;</span>
+    epoch_loss <span style=color:#555>=</span> []
+    label2vec <span style=color:#555>=</span> {
+        <span style=color:#f60>0</span>: [<span style=color:#f60>1</span>, <span style=color:#f60>0</span>, <span style=color:#f60>0</span>],
+        <span style=color:#f60>1</span>: [<span style=color:#f60>0</span>, <span style=color:#f60>1</span>, <span style=color:#f60>0</span>],
+        <span style=color:#f60>2</span>: [<span style=color:#f60>0</span>, <span style=color:#f60>0</span>, <span style=color:#f60>1</span>]
     }
     
-    for x_data, y_data in zip(x,y):
-        c = circuit(weights, x_data)
-        label = label2vec[y_data]
-        c, label = np.array(c),np.array(label)
-        s = np.sum(abs(c - label)**2)
+    <span style=color:#069;font-weight:700>for</span> x_data, y_data <span style=color:#000;font-weight:700>in</span> <span style=color:#366>zip</span>(x,y):
+        c <span style=color:#555>=</span> circuit(weights, x_data)
+        label <span style=color:#555>=</span> label2vec[y_data]
+        c, label <span style=color:#555>=</span> np<span style=color:#555>.</span>array(c),np<span style=color:#555>.</span>array(label)
+        s <span style=color:#555>=</span> np<span style=color:#555>.</span>sum(<span style=color:#366>abs</span>(c <span style=color:#555>-</span> label)<span style=color:#555>**</span><span style=color:#f60>2</span>)
     
-        epoch_loss.append(s)
+        epoch_loss<span style=color:#555>.</span>append(s)
     
-    return np.sum(epoch_loss) / len(epoch_loss)
+    <span style=color:#069;font-weight:700>return</span> np<span style=color:#555>.</span>sum(epoch_loss) <span style=color:#555>/</span> <span style=color:#366>len</span>(epoch_loss)
 
-# Define the accuracy
-accuracy = lambda x,y: np.sum(x == y) / len(x)
+<span style=color:#09f;font-style:italic># Define the accuracy</span>
+accuracy <span style=color:#555>=</span> <span style=color:#069;font-weight:700>lambda</span> x,y: np<span style=color:#555>.</span>sum(x <span style=color:#555>==</span> y) <span style=color:#555>/</span> <span style=color:#366>len</span>(x)
 
-def iterate_minibatches(inputs, targets, batch_size):
-    &#34;&#34;&#34; A generator for batches of the input data
-    &#34;&#34;&#34;
-    for start_idx in range(0, inputs.shape[0] - batch_size + 1, batch_size):
-        idxs = slice(start_idx, start_idx + batch_size)
-        yield inputs[idxs], targets[idxs]
-</code></pre></div><h2 id=35-training>3.5) Training</h2><p>In order to train we need to define hyperparameters, weight initialization and the optimizer.</p><ul><li><p>Optimizer: I choose to use Adam;</p></li><li><p>Intialization: I choose to initialize with a random uniform distribution of angles, even though this has been show to present barren plateaus on the loss landscape, maybe in a future post I will talk about mitigating barren plateaus;</p></li><li><p>Hyperparameters: I choose 2 layers for the PQC, and a learning rate of 0.1;</p></li></ul><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback># Hyperparameters
-layers = 2
-learning_rate = 0.05
-epochs = 10
-batch_size = 10
+<span style=color:#069;font-weight:700>def</span> <span style=color:#c0f>iterate_minibatches</span>(inputs, targets, batch_size):
+    <span style=color:#c30>&#34;&#34;&#34; A generator for batches of the input data
+</span><span style=color:#c30>    &#34;&#34;&#34;</span>
+    <span style=color:#069;font-weight:700>for</span> start_idx <span style=color:#000;font-weight:700>in</span> <span style=color:#366>range</span>(<span style=color:#f60>0</span>, inputs<span style=color:#555>.</span>shape[<span style=color:#f60>0</span>] <span style=color:#555>-</span> batch_size <span style=color:#555>+</span> <span style=color:#f60>1</span>, batch_size):
+        idxs <span style=color:#555>=</span> <span style=color:#366>slice</span>(start_idx, start_idx <span style=color:#555>+</span> batch_size)
+        <span style=color:#069;font-weight:700>yield</span> inputs[idxs], targets[idxs]
+</code></pre></div><h2 id=35-training>3.5) Training</h2><p>In order to train we need to define hyperparameters, weight initialization and the optimizer.</p><ul><li><p>Optimizer: I choose to use Adam;</p></li><li><p>Intialization: I choose to initialize with a random uniform distribution of angles, even though this has been show to present barren plateaus on the loss landscape, maybe in a future post I will talk about mitigating barren plateaus;</p></li><li><p>Hyperparameters: I choose 2 layers for the PQC, and a learning rate of 0.1;</p></li></ul><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#09f;font-style:italic># Hyperparameters</span>
+layers <span style=color:#555>=</span> <span style=color:#f60>2</span>
+learning_rate <span style=color:#555>=</span> <span style=color:#f60>0.05</span>
+epochs <span style=color:#555>=</span> <span style=color:#f60>10</span>
+batch_size <span style=color:#555>=</span> <span style=color:#f60>10</span>
 
-# Optimizer
-opt = qml.AdamOptimizer(learning_rate)#, beta1=0.9, beta2=0.999)
+<span style=color:#09f;font-style:italic># Optimizer</span>
+opt <span style=color:#555>=</span> qml<span style=color:#555>.</span>AdamOptimizer(learning_rate)<span style=color:#09f;font-style:italic>#, beta1=0.9, beta2=0.999)</span>
 
-# Initialize Random Weights
-params = np.random.uniform(low= 0, high= np.pi, size=(layers, n_qubits, 3))
+<span style=color:#09f;font-style:italic># Initialize Random Weights</span>
+params <span style=color:#555>=</span> np<span style=color:#555>.</span>random<span style=color:#555>.</span>uniform(low<span style=color:#555>=</span> <span style=color:#f60>0</span>, high<span style=color:#555>=</span> np<span style=color:#555>.</span>pi, size<span style=color:#555>=</span>(layers, n_qubits, <span style=color:#f60>3</span>))
 
-# Helpers
-val_acc = []
-t_acc = []
-t_loss = []
-</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback># Training
-for i in tqdm(range(epochs)):
-    train_acc = []
-    for Xbatch, Ybatch in iterate_minibatches(X_train, Y_train, batch_size=batch_size):
-        params = opt.step(lambda v: cost(v, Xbatch, Ybatch), params)
+<span style=color:#09f;font-style:italic># Helpers</span>
+val_acc <span style=color:#555>=</span> []
+t_acc <span style=color:#555>=</span> []
+t_loss <span style=color:#555>=</span> []
+</code></pre></div><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#09f;font-style:italic># Training</span>
+<span style=color:#069;font-weight:700>for</span> i <span style=color:#000;font-weight:700>in</span> tqdm(<span style=color:#366>range</span>(epochs)):
+    train_acc <span style=color:#555>=</span> []
+    <span style=color:#069;font-weight:700>for</span> Xbatch, Ybatch <span style=color:#000;font-weight:700>in</span> iterate_minibatches(X_train, Y_train, batch_size<span style=color:#555>=</span>batch_size):
+        params <span style=color:#555>=</span> opt<span style=color:#555>.</span>step(<span style=color:#069;font-weight:700>lambda</span> v: cost(v, Xbatch, Ybatch), params)
     
     
-    train_predictions = []
-    for x in X_train:
-        pred = circuit(params, x)
-        label = np.argmax(pred)
-        train_predictions.append(label)
+    train_predictions <span style=color:#555>=</span> []
+    <span style=color:#069;font-weight:700>for</span> x <span style=color:#000;font-weight:700>in</span> X_train:
+        pred <span style=color:#555>=</span> circuit(params, x)
+        label <span style=color:#555>=</span> np<span style=color:#555>.</span>argmax(pred)
+        train_predictions<span style=color:#555>.</span>append(label)
     
-    train_acc = accuracy(train_predictions,Y_train)
-    t_acc.append(train_acc)   
+    train_acc <span style=color:#555>=</span> accuracy(train_predictions,Y_train)
+    t_acc<span style=color:#555>.</span>append(train_acc)   
     
-    valid_predictions = []
-    for x in X_valid:
-        pred = circuit(params, x)
-        label = np.argmax(pred)
-        valid_predictions.append(label)
+    valid_predictions <span style=color:#555>=</span> []
+    <span style=color:#069;font-weight:700>for</span> x <span style=color:#000;font-weight:700>in</span> X_valid:
+        pred <span style=color:#555>=</span> circuit(params, x)
+        label <span style=color:#555>=</span> np<span style=color:#555>.</span>argmax(pred)
+        valid_predictions<span style=color:#555>.</span>append(label)
     
-    valid_acc = accuracy(valid_predictions,Y_valid)
-    val_acc.append(valid_acc)
+    valid_acc <span style=color:#555>=</span> accuracy(valid_predictions,Y_valid)
+    val_acc<span style=color:#555>.</span>append(valid_acc)
 
-    loss = np.mean(cost(params, X_train, Y_train))
-    t_loss.append(loss)
+    loss <span style=color:#555>=</span> np<span style=color:#555>.</span>mean(cost(params, X_train, Y_train))
+    t_loss<span style=color:#555>.</span>append(loss)
 </code></pre></div><pre><code>100%|██████████| 10/10 [00:41&lt;00:00,  4.16s/it]
-</code></pre><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-fallback data-lang=fallback>import matplotlib.pyplot as plt
+</code></pre><div class=highlight><pre style=background-color:#f0f3f3;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#069;font-weight:700>import</span> <span style=color:#0cf;font-weight:700>matplotlib.pyplot</span> <span style=color:#069;font-weight:700>as</span> <span style=color:#0cf;font-weight:700>plt</span>
 
-epochs = range(len(t_loss))
+epochs <span style=color:#555>=</span> <span style=color:#366>range</span>(<span style=color:#366>len</span>(t_loss))
 
 
-fig = plt.figure(figsize=(14,5))
-gs = fig.add_gridspec(1, 2)
-ax1 = fig.add_subplot(gs[0, 0])
-ax2 = fig.add_subplot(gs[0, 1])
+fig <span style=color:#555>=</span> plt<span style=color:#555>.</span>figure(figsize<span style=color:#555>=</span>(<span style=color:#f60>14</span>,<span style=color:#f60>5</span>))
+gs <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_gridspec(<span style=color:#f60>1</span>, <span style=color:#f60>2</span>)
+ax1 <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_subplot(gs[<span style=color:#f60>0</span>, <span style=color:#f60>0</span>])
+ax2 <span style=color:#555>=</span> fig<span style=color:#555>.</span>add_subplot(gs[<span style=color:#f60>0</span>, <span style=color:#f60>1</span>])
 
-ax1.plot(epochs, t_loss)
-ax1.set_xlabel(&#39;Epochs&#39;)
-ax1.set_ylabel(&#39;Loss&#39;)
+ax1<span style=color:#555>.</span>plot(epochs, t_loss)
+ax1<span style=color:#555>.</span>set_xlabel(<span style=color:#c30>&#39;Epochs&#39;</span>)
+ax1<span style=color:#555>.</span>set_ylabel(<span style=color:#c30>&#39;Loss&#39;</span>)
 
-ax2.plot(epochs, t_acc, label=&#39;Train&#39;)
-ax2.plot(epochs, val_acc, label=&#39;Validation&#39;)
-ax2.set_xlabel(&#39;Epochs&#39;)
-ax2.set_ylabel(&#39;Accuracy&#39;)
-plt.legend()
-plt.show()
+ax2<span style=color:#555>.</span>plot(epochs, t_acc, label<span style=color:#555>=</span><span style=color:#c30>&#39;Train&#39;</span>)
+ax2<span style=color:#555>.</span>plot(epochs, val_acc, label<span style=color:#555>=</span><span style=color:#c30>&#39;Validation&#39;</span>)
+ax2<span style=color:#555>.</span>set_xlabel(<span style=color:#c30>&#39;Epochs&#39;</span>)
+ax2<span style=color:#555>.</span>set_ylabel(<span style=color:#c30>&#39;Accuracy&#39;</span>)
+plt<span style=color:#555>.</span>legend()
+plt<span style=color:#555>.</span>show()
 </code></pre></div><p><img src=/n-blog/figures/2021-02-22-VQC-Pennylane_files/VQC_Pennylane_24_0.png alt=png></p><h1 id=references>References</h1><ul><li><p><a href=https://pennylane.ai/qml/demos/tutorial_variational_classifier.html>Variational Classifier Pennylane Demo</a></p></li><li><p><a href=https://pennylane.ai/qml/glossary/quantum_embedding.html>Quantum Embedding</a></p></li><li><p><a href=https://arxiv.org/abs/1804.00633>Circuit-Centric quantum classifiers</a></p></li></ul></div><footer class="post-footer clearfix"><div class=share><a class=icon-twitter href="https://twitter.com/share?text=Variational%20Quantum%20Classifier&url=https%3a%2f%2fnahumsa.github.io%2fn-blog%2f2021-02-22-vqc%2f" onclick="return window.open(this.href,'twitter-share','width=550,height=235'),!1" aria-label="Share on Twitter"><i class="fa fa-twitter" aria-hidden=true></i></a></div></footer></article></div></div></div><footer class=footer><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-jump-top js-jump-top" href=# aria-label="Back to Top"><i class="fa fa-angle-up" aria-hidden=true></i></a></div><p class=footer-copyright><span>&copy; 2021 / Powered by <a href=https://gohugo.io/>Hugo</a></span></p><p class=footer-copyright><span><a href=https://github.com/roryg/ghostwriter>Ghostwriter theme</a> By <a href=http://jollygoodthemes.com>JollyGoodThemes</a></span>
 <span>/ <a href=https://github.com/jbub/ghostwriter>Ported</a> to Hugo By <a href=https://github.com/jbub>jbub</a></span></p></div></footer><script src=https://nahumsa.github.io/n-blog/js/jquery-1.11.3.min.js></script><script src=https://nahumsa.github.io/n-blog/js/jquery.fitvids.js></script><script src=https://nahumsa.github.io/n-blog/js/scripts.js></script></body></html>
