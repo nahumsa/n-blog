@@ -1,5 +1,5 @@
 +++
-title =  "Changing gates on a predifined circuit (Qiskit)"
+title =  "Changing gates on a predefined circuit (Qiskit)"
 date = 2020-09-08T20:00:00Z
 author = "Nahum Sá"
 +++
