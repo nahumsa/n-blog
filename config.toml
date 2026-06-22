@@ -12,6 +12,9 @@ PygmentsStyle = "manni"
     hl_Lines = ""
     tabWidth = 4
 
+[markup.goldmark.renderer]
+    unsafe = true
+
 [Params]
     mainSections = ["post"]
     intro = true
