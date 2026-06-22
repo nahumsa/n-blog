@@ -1,6 +1,6 @@
 +++
 title = "How I Use AI"
-date = 2026-06-12:00:00Z
+date = 2026-06-12T00:00:00Z
 author = "Nahum Sá"
 +++
 
