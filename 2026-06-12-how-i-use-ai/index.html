@@ -1,0 +1,88 @@
+<!doctype html><html prefix="og: http://ogp.me/ns#"><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>How I Use AI </title><meta name=description content="Testing the model
+AI Development Process
+
+
+AI Development Process
+
+DBT Models
+
+1. Sketching a new model
+2. Developing the model
+3. Reviewing the model
+4. Testing the model
+5. Final Touches
+
+
+Developing Applications
+
+Composability
+Design Patterns
+
+
+
+
+
+
+Currently, I use Pi as a way to control and structure my AI development setup.
+I have tried all the coding agents on the market (at least the famous ones), however I really enjoy Pi because it is supper customizable
+and I can easily extend it with whatever I like using Pi itself. I try to keep everything minimal, only adding when it&rsquo;s needed, you can check my setup here."><meta name=HandheldFriendly content="True"><meta name=MobileOptimized content="320"><meta name=generator content="Hugo 0.144.0"><meta name=robots content="index,follow"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:title" content="How I Use AI"><meta property="og:description" content="Testing the model
+AI Development Process
+
+
+AI Development Process
+
+DBT Models
+
+1. Sketching a new model
+2. Developing the model
+3. Reviewing the model
+4. Testing the model
+5. Final Touches
+
+
+Developing Applications
+
+Composability
+Design Patterns
+
+
+
+
+
+
+Currently, I use Pi as a way to control and structure my AI development setup.
+I have tried all the coding agents on the market (at least the famous ones), however I really enjoy Pi because it is supper customizable
+and I can easily extend it with whatever I like using Pi itself. I try to keep everything minimal, only adding when it&rsquo;s needed, you can check my setup here."><meta property="og:type" content="article"><meta property="og:url" content="https://nahumsa.github.io/n-blog/2026-06-12-how-i-use-ai/"><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/site.css><link rel=stylesheet href=https://nahumsa.github.io/n-blog/dist/syntax.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300&subset=latin,cyrillic-ext,latin-ext,cyrillic"><link rel=stylesheet href=https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css integrity=sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN crossorigin=anonymous><link rel='shortcut icon' type=image/jpg href=https://nahumsa.github.io/n-blog/favicon.ico><script>MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]],displayMath:[["$$","$$"],["\\[","\\]"]],processEscapes:!0,processEnvironments:!0},options:{skipHtmlTags:["script","noscript","style","textarea","pre"]}},window.addEventListener("load",e=>{document.querySelectorAll("mjx-container").forEach(function(e){e.parentElement.classList+="has-jax"})})</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript id=MathJax-script async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script></head><body><div id=wrapper><header class=site-header><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-social hint--top" data-hint=Twitter aria-label=Twitter href=https://twitter.com/sa_nahum rel=me><i class="fa fa-twitter" aria-hidden=true></i>
+</a><a class="button-square button-social hint--top" data-hint=Github aria-label=Github href=https://github.com/nahumsa rel=me><i class="fa fa-github-alt" aria-hidden=true></i>
+</a><a class="button-square button-social hint--top" data-hint=Email aria-label="Send an Email" href=mailto:nahumsa@cbpf.br><i class="fa fa-envelope" aria-hidden=true></i></a></div><ul class=site-nav></ul></div></header><div id=container><div class=container><article class=post-container itemscope itemtype=http://schema.org/BlogPosting><header class=post-header><h1 class=post-title itemprop="name headline">How I Use AI</h1><p class="post-date post-line"><span>Published <time datetime=2026-06-12 itemprop=datePublished>Fri, Jun 12, 2026</time></span>
+<span>by</span>
+<span itemscope itemprop=author itemtype=https://schema.org/Person><span itemprop=name><a href=# itemprop=url rel=author>Nahum Sá</a></span></span></p></header><div class="post-content clearfix" itemprop=articleBody><p>Testing the model</p><h1 id=ai-development-process>AI Development Process</h1><ul><li><a href=#ai-development-process>AI Development Process</a><ul><li><a href=#dbt-models>DBT Models</a><ul><li><a href=#1-sketching-a-new-model>1. Sketching a new model</a></li><li><a href=#2-developing-the-model>2. Developing the model</a></li><li><a href=#3-reviewing-the-model>3. Reviewing the model</a></li><li><a href=#4-testing-the-model>4. Testing the model</a></li><li><a href=#5-final-touches>5. Final Touches</a></li></ul></li><li><a href=#developing-applications>Developing Applications</a><ul><li><a href=#composability>Composability</a></li><li><a href=#design-patterns>Design Patterns</a></li></ul></li></ul></li></ul><p>Currently, I use <a href=https://pi.dev/>Pi</a> as a way to control and structure my AI development setup.
+I have tried all the coding agents on the market (at least the famous ones), however I really enjoy Pi because it is supper customizable
+and I can easily extend it with whatever I like using Pi itself. I try to keep everything minimal, only adding when it&rsquo;s needed, you can check my setup <a href=https://github.com/nahumsa/dotfiles>here</a>.</p><p>For development I have been enjoying GPT-5.5. generally in Medium mode, as support for thinking, planning, reviewing, and implementing solutions.
+Depending on the feature I like to use higher reasoning (mainly planning complex features or research) but for implementation I keep Medium or Low reasoning for the most part.</p><h2 id=dbt-models>DBT Models</h2><p>Most of my work has been developing dbt models. I use a semi-constructed process for creating a new model. But I have some guidelines</p><ul><li>I never let the coding agent query the database itself, since it can be both a security risk and lead to high cost on the data warehouse. Leaving the model free in this type of environment does not seem safe.</li><li>All commands that interact with any system should be approved by me.</li></ul><p>I know that those constraints may seem really hard, but I like it that way.</p><h3 id=1-sketching-a-new-model>1. Sketching a new model</h3><p>I usually start with multiple sketches in the <code>analysis</code> folder of dbt since it can use jinja and all dbt quirks.
+I make the model generate multiple sketches to understand which could be the best one, also pointing edge cases to each sketch.
+After the sketches are created I can get the SQL and iterate directly with the database directly.</p><p>Because of this, I first manually validate whether the query responds in the expected way.
+This validation happens both through my own development and with the support of AI,
+since I think that the model can point some important edge cases on the model development which we may miss since we may be narrow-minded when developing alone.</p><h3 id=2-developing-the-model>2. Developing the model</h3><p>To develop the model, I create a plan based on the previously developed query.
+In this plan, I ask the model what possible failures may arise in the implementation.
+The idea is to anticipate problems before writing the final code.
+I use Matt Pockock&rsquo;s <a href=https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md>grill-me skill</a> to run a more critical round of questioning.
+After a round in which I realize that the model is understanding the problem reasonably well and covering all main edge cases, I ask it to develop the model.
+Usually, the model is able to develop the solution in a single attempt, mainly because I already provide code snippets of joins and aggregations that I need, I mainly use the agent to summarize my findings.</p><p>When this does not happens, I start a more nuanced grill-me loop where the output is written in a Markdown file where I add comments to the points that I believe were not well developed,
+mainly in relation to usability, code clarity, use of macros, use of variables, and ways to abbreviate or simplify repetitive parts of the code.</p><h3 id=3-reviewing-the-model>3. Reviewing the model</h3><p>After developing both the documentation and the model generation part, I use <a href=https://github.com/cursor/plugins/blob/main/cursor-team-kit/skills/thermo-nuclear-code-quality-review/SKILL.md>Cursor’s Thermonuclear Code Review</a> to perform an initial code review.
+I think that there are a lot of improvements which could be done for data modelling and dbt on this skill, however I plan on doing that on the future.</p><p>From the Thermonuclear Code Review, adding some specific points for dbt modeling, I can identify the largest existing flaws in the model and verify whether there is anything specific that should be changed.</p><p>Usually, the model also suggests new modeling approaches. When this happens, I try to explore the pros and cons of each alternative to understand which is the best approach, since there is usually not a single correct answer.</p><p>Currently, I consider the Git diff part not very pleasant in my workflow, mainly because I use Neovim and I haven&rsquo;t find a good code diff mode on Neovim.
+Even so, I have been trying to find better tools to handle this step.</p><h3 id=4-testing-the-model>4. Testing the model</h3><p>After verifying all the revisions made in the Code Review, I use the model to create validation tests based on the generated model.
+For example, I want to validate whether all calculations were done correctly.
+To do this, I use a new session that does not necessarily know how the model works, using only the documentation as a reference.
+This approach helps verify whether the documentation is clear enough for another instance to understand the expected behavior of the model.</p><p>Usually, at this point, I find some gaps in the documentation that need to be improved so that the tests can be generated correctly.
+When there is some very complex calculation that I believe I can do more quickly than the model, I do that calculation manually myself.</p><p>All the tests I create are manually validated, one by one.
+I do this to understand whether everything that was implemented is <strong>really</strong> correct, mainly because some models can be critical.
+In these cases, human validation is essential, since I am the person ultimately responsible for the model.</p><h3 id=5-final-touches>5. Final Touches</h3><p>If everything goes well after the validation of the tests, I run the Code Review once again.
+The objective of this second round is to verify whether nothing urgent or very relevant is missing.
+I also use the stochasticity of the model as a way to increase the chance of finding some important problem that may have gone unnoticed.</p><p>If everything is correct, I create a new pull request, which will be reviewed by my peers.</p><p>This process is still under development, mainly in the skills part.
+Because of the restriction of not necessarily being able to run the model and feed this data directly to the AI, some assumption gaps sometimes arise, in which I need to intervene manually.
+Despite this, for the security of the data as a whole, I prefer to follow this approach.</p><h2 id=developing-applications>Developing Applications</h2><p>I have developed as well a full-stack application using mostly coding agents for a while, it is a fully functional Matchmaking app for Pokemon TCG with the user and administrator view.
+It has a lot of features that were made specifically for the users and their pain points, I know that because I&rsquo;m a user!!</p><p>This has not the same structure that I have for dbt since the first structure is what I use the most, but I have thought about some guidelines that helped me:</p><h3 id=composability>Composability</h3><p>I want the architecture to be composable not think that much about inheritance and all that OOP stuff.
+Models are way better on composing things (maybe it&rsquo;s my functional programming brain) than creating complex structures of inheritance</p><h3 id=design-patterns>Design Patterns</h3><p>When we are developing, design patterns can be an afterthought, but I think that because of the vast literature regarding those patterns, the models can understand the codebase way better.
+I already used a lot of design patterns for my projects but I think that now is essential for maintaining a larger code base that you may not be looking at all times.</p><p>Those patterns can create clear boundary for models and help them understand what they&rsquo;re doing, a plus is that it also helps humans read the codebase.</p></div><footer class="post-footer clearfix"><div class=share><a class=icon-twitter href="https://twitter.com/share?text=How%20I%20Use%20AI&url=https%3a%2f%2fnahumsa.github.io%2fn-blog%2f2026-06-12-how-i-use-ai%2f" onclick='return window.open(this.href,"twitter-share","width=550,height=235"),!1' aria-label="Share on Twitter"><i class="fa fa-twitter" aria-hidden=true></i></a></div></footer></article></div></div></div><footer class=footer><div class=container><div class=site-title-wrapper><h1 class=site-title><a href=https://nahumsa.github.io/n-blog/>n-blog</a></h1><a class="button-square button-jump-top js-jump-top" href=# aria-label="Back to Top"><i class="fa fa-angle-up" aria-hidden=true></i></a></div><p class=footer-copyright><span>&copy; 2026 / Powered by <a href=https://gohugo.io/>Hugo</a></span></p><p class=footer-copyright><span><a href=https://github.com/roryg/ghostwriter>Ghostwriter theme</a> By <a href=http://jollygoodthemes.com>JollyGoodThemes</a></span>
+<span>/ <a href=https://github.com/jbub/ghostwriter>Ported</a> to Hugo By <a href=https://github.com/jbub>jbub</a></span></p></div></footer><script src=https://nahumsa.github.io/n-blog/js/jquery-1.11.3.min.js></script><script src=https://nahumsa.github.io/n-blog/js/jquery.fitvids.js></script><script src=https://nahumsa.github.io/n-blog/js/scripts.js></script></body></html>
